@@ -38,6 +38,15 @@ const WhyChooseUs = () => {
                     <h4>Easy Access</h4>
                     <p>Bank from anywhere, anytime using our seamless platform.</p>
                 </div>
+                <div className="card">
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/128/4565/4565217.png"
+                        alt="Bank Icon"
+                        className="icon"
+                    />
+                    <h4>Easy Mobile Banking</h4>
+                    <p>Enjoy fast, simple, and secure banking right from your mobile device.</p>
+                </div>
             </div>
         </motion.section>
     );

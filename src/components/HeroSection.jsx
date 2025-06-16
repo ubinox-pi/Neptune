@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <motion.section
       initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -44,6 +46,7 @@ const HeroSection = () => {
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 300 }}
         className="get-started"
+        onClick={() => navigate('/register')}
       >
         Get Started
       </motion.button>

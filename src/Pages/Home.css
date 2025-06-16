@@ -1,6 +1,7 @@
-/* ================ */
-/* Global Styles */
-/* ================ */
+/*
+!* ================ *!
+!* Global Styles *!
+!* ================ *!
 :root {
   --primary-color: #0066cc;
   --primary-dark: #004080;
@@ -13,9 +14,9 @@
   --transition-base: all 0.3s ease;
 }
 
-/* ================ */
-/* Navbar Styles */
-/* ================ */
+!* ================ *!
+!* Navbar Styles *!
+!* ================ *!
 .navbar {
   background-color: #fff;
   box-shadow: var(--shadow-light);
@@ -39,7 +40,7 @@
 }
 
 .navbar__logo {
-  font-size: 1.875rem; /* 30px */
+  font-size: 1.875rem; !* 30px *!
   font-weight: 700;
   color: var(--text-dark);
   transition: var(--transition-base);
@@ -85,9 +86,9 @@
   width: 100%;
 }
 
-/* ================ */
-/* Hero Slider Styles */
-/* ================ */
+!* ================ *!
+!* Hero Slider Styles *!
+!* ================ *!
 .slider-container {
   width: 100%;
   height: 80vh;
@@ -97,7 +98,7 @@
   margin-top: 80px;
   transform: translateY(100%);
   opacity: 0;
-  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), 
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
               opacity 0.8s ease-out;
 }
 
@@ -202,9 +203,9 @@
   }
 }
 
-/* ================ */
-/* Features Section Styles */
-/* ================ */
+!* ================ *!
+!* Features Section Styles *!
+!* ================ *!
 .features-section {
   padding: 5rem 2rem;
   background-color: var(--bg-light);
@@ -280,7 +281,7 @@
   line-height: 1.6;
 }
 
-/* Active state animations */
+!* Active state animations *!
 .features-section.visible .section-title,
 .features-section.visible .section-subtitle,
 .features-section.visible .feature-card {
@@ -293,7 +294,7 @@
   box-shadow: 0 10px 25px rgba(0, 43, 92, 0.1);
 }
 
-/* Decorative top border */
+!* Decorative top border *!
 .features-section::before {
   content: '';
   position: absolute;
@@ -304,7 +305,7 @@
   background: linear-gradient(90deg, var(--primary-color) 0%, #00cc99 100%);
 }
 
-/*Testimonials Section Styles*/
+!*Testimonials Section Styles*!
 
 .testimonials-section {
   background: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
@@ -498,51 +499,51 @@ blockquote::after {
   transform: scale(1.2);
 }
 
-/* ================ */
-/* Responsive Styles */
-/* ================ */
+!* ================ *!
+!* Responsive Styles *!
+!* ================ *!
 @media (max-width: 768px) {
-  /* Navbar */
+  !* Navbar *!
   .navbar {
     padding: 0 15px;
     height: 70px;
   }
-  
+
   .navbar__logo {
     font-size: 1.5rem;
   }
-  
+
   .navbar__links li {
     margin: 0 10px;
   }
-  
+
   .navbar__links a {
     font-size: 0.9rem;
   }
 
-  /* Slider */
+  !* Slider *!
   .slider-container {
     height: 60vh;
     margin-top: 70px;
   }
-  
+
   .slide-content {
     padding: 0 5%;
   }
-  
+
   .pagination {
     bottom: 20px;
   }
 
-  /* Features */
+  !* Features *!
   .features-section {
     padding: 3rem 1.5rem;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .feature-card {
     padding: 1.5rem;
   }
@@ -550,17 +551,17 @@ blockquote::after {
 
 @media (max-width: 480px) {
   .navbar__links {
-    display: none; /* Consider a mobile menu for smaller screens */
+    display: none; !* Consider a mobile menu for smaller screens *!
   }
-  
+
   .slider-container {
     height: 50vh;
   }
-  
+
   .slide-title {
     font-size: 1.8rem;
   }
-  
+
   .slide-description {
     font-size: 1rem;
   }
@@ -571,24 +572,24 @@ blockquote::after {
   .testimonials-section {
     padding: 3rem 1rem;
   }
-  
+
   .trust-logos {
     gap: 1.5rem;
   }
-  
+
   .trust-logos img {
     height: 30px;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
-  
+
   .testimonial-content {
     padding: 1.5rem;
   }
-  
+
   blockquote {
     font-size: 1rem;
   }
-}
+}*/
