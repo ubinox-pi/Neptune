@@ -6,14 +6,19 @@ const HeroSection = () => {
   const navigate = useNavigate();
   return (
     <motion.section
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{
         duration: 0.8,
         ease: "easeOut"
       }}
       className="hero-section"
     >
+      <div className="hero-bg-shapes">
+        <motion.div className="shape shape1" animate={{ y: [0, 30, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="shape shape2" animate={{ y: [0, -40, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }} />
+        <motion.div className="shape shape3" animate={{ x: [0, 40, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} />
+      </div>
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
