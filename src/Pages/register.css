@@ -18,7 +18,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 1.5rem;
+    padding: 1rem;
     background-color: #f9fcff;
 }
 
@@ -26,14 +26,15 @@ body {
 .register-container {
     width: 100%;
     height: 100%;
-    max-height: 1000px;
+    max-height: none;
     max-width: 900px;
     background: #ffffff;
-    padding: 2.5rem;
+    padding: 2rem;
     border-radius: 18px;
     box-shadow: 0 12px 30px rgba(0, 123, 255, 0.08);
     transition: box-shadow 0.3s ease;
-    margin: 0 auto;  /* Center the container horizontally */
+    margin: 1rem auto;
+    overflow-y: auto;
 }
 
 .register-container:hover {
@@ -52,7 +53,7 @@ body {
 /* Grid form layout */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
 }
 
@@ -78,6 +79,8 @@ body {
     font-size: 1rem;
     transition: border-color 0.3s, box-shadow 0.3s;
     background-color: #fefefe;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -227,19 +230,131 @@ button:disabled {
     transform: none;
 }
 
-/* Responsive */
-@media (max-width: 576px) {
+/* Existing User Link */
+.existing-user-link {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e1e8f0;
+}
+
+.existing-user-link p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.login-link {
+    color: #3399ff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.25rem;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0.5rem;
+    }
+
     .register-container {
         padding: 1.5rem;
+        border-radius: 12px;
+        margin: 0.5rem auto;
+    }
+
+    .register-container h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 0.875rem;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
     }
 
     button,
     .otp-btn,
     .verify-btn {
         width: 100%;
+        padding: 0.875rem;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .register-container {
+        padding: 1rem;
+        border-radius: 8px;
     }
 
-    .form-buttons {
-        flex-direction: column;
+    .register-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-grid {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0.25rem;
+    }
+
+    .register-container {
+        padding: 0.75rem;
+        margin: 0.25rem auto;
+    }
+
+    .register-container h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .register-container {
+        padding: 0.5rem;
+    }
+
+    .register-container h2 {
+        font-size: 1.2rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
     }
 }

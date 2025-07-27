@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./register.css";
 import {motion} from "framer-motion";
 import '@fontsource/roboto/300.css';
@@ -1366,6 +1367,16 @@ const RegisterForm = () => {
             )}
           </div>
         </form>
+
+        {/* Existing User Link */}
+        <div className="existing-user-link">
+          <p>
+            Already have an account?{' '}
+            <Link to="/login" className="login-link">
+              Sign In Here
+            </Link>
+          </p>
+        </div>
       </Box>
     </div>
   );
