@@ -125,6 +125,7 @@ export const sessionManager = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         credentials: 'include', // Use session cookie
         body: JSON.stringify({ email }),
@@ -154,6 +155,7 @@ export const sessionManager = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         credentials: 'include', // Use session cookie
         body: JSON.stringify({ email, otp }),
@@ -183,6 +185,7 @@ export const sessionManager = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         credentials: 'include', // Use session cookie
         body: JSON.stringify({ phoneNumber }),
@@ -212,6 +215,7 @@ export const sessionManager = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         credentials: 'include', // Use session cookie
         body: JSON.stringify({ phoneNumber, otp }),
