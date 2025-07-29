@@ -1,9 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { sessionManager } from '../utils/sessionManager.js';
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleGetStarted = async () => {
+    setLoading(true);
+    setError('');
+
+    // First authenticate with the session
+    const loginResult = await sessionManager.login();
+
+    if (loginResult.success) {
+      // Show success message with user info
+      const userInfo = loginResult.data;
+      console.log(`Login successful! Welcome ${userInfo.username} (${userInfo.role})`);
+
+      // Test session immediately after login
+      const sessionTest = await sessionManager.testSessionAfterLogin();
+      if (sessionTest.success) {
+        console.log('Session test passed - session is properly established');
+      } else {
+        console.warn('Session test failed, but proceeding anyway:', sessionTest.error);
+        // Don't block the user - proceed to registration page
+        // The OTP functions will handle re-authentication if needed
+      }
+
+      // Navigate to register page after successful authentication
+      navigate('/register');
+    } else {
+      setError(loginResult.error || 'Authentication failed. Please try again.');
+    }
+
+    setLoading(false);
+  };
+
   return (
     <motion.section
       initial={{ opacity: 0, scale: 0.95 }}
@@ -46,14 +81,27 @@ const HeroSection = () => {
         From savings to investments – we've got everything to empower your future.
       </motion.p>
 
+      {error && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="error-message"
+          style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}
+        >
+          {error}
+        </motion.div>
+      )}
+
       <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: loading ? 1 : 1.1 }}
+        whileTap={{ scale: loading ? 1 : 0.95 }}
         transition={{ type: "spring", stiffness: 300 }}
         className="get-started"
-        onClick={() => navigate('/register')}
+        onClick={handleGetStarted}
+        disabled={loading}
+        style={{ opacity: loading ? 0.7 : 1 }}
       >
-        Get Started
+        {loading ? 'Authenticating...' : 'Get Started'}
       </motion.button>
     </motion.section>
   );

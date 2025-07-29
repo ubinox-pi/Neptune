@@ -10,6 +10,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Box from '@mui/material/Box';
+import { sessionManager } from '../utils/sessionManager.js';
 
 const genderOptions = ["MALE", "FEMALE", "OTHER"];
 const maritalStatusOptions = ["SINGLE", "MARRIED", "DIVORCED", "WIDOWED"];
@@ -338,6 +339,187 @@ const RegisterForm = () => {
     passport: null,
     drivingLicense: null,
   });
+  const [loading, setLoading] = useState(false);
+
+  const sendPhoneOTP = async (phoneNumber) => {
+    try {
+      setLoading(true);
+
+      // Ensure we have a valid session before making the request
+      await sessionManager.ensureAuthenticated();
+
+      const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-phone', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      if (response.ok) {
+        setPhoneOtpSent(true);
+        setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: undefined }));
+      } else if (response.status === 401) {
+        // Try to re-authenticate and retry
+        try {
+          await sessionManager.ensureAuthenticated();
+          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-phone', {
+            method: 'POST',
+            body: JSON.stringify({ phoneNumber }),
+          });
+
+          if (retryResponse.ok) {
+            setPhoneOtpSent(true);
+            setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: undefined }));
+          } else {
+            const errorData = await retryResponse.json();
+            setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: errorData.message || 'Failed to send OTP after re-authentication' }));
+          }
+        } catch (reAuthError) {
+          setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Authentication failed. Please refresh the page and try again.' }));
+        }
+      } else {
+        const errorData = await response.json();
+        setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: errorData.message || 'Failed to send OTP' }));
+      }
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Network error. Please try again.' }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendEmailOTP = async (email) => {
+    try {
+      setLoading(true);
+
+      // Ensure we have a valid session before making the request
+      await sessionManager.ensureAuthenticated();
+
+      const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-email', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setEmailOtpSent(true);
+        setErrors((prev) => ({ ...prev, ['contactDetails.email']: undefined }));
+      } else if (response.status === 401) {
+        // Try to re-authenticate and retry
+        try {
+          await sessionManager.ensureAuthenticated();
+          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-email', {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+          });
+
+          if (retryResponse.ok) {
+            setEmailOtpSent(true);
+            setErrors((prev) => ({ ...prev, ['contactDetails.email']: undefined }));
+          } else {
+            const errorData = await retryResponse.json();
+            setErrors((prev) => ({ ...prev, ['contactDetails.email']: errorData.message || 'Failed to send OTP after re-authentication' }));
+          }
+        } catch (reAuthError) {
+          setErrors((prev) => ({ ...prev, ['contactDetails.email']: 'Authentication failed. Please refresh the page and try again.' }));
+        }
+      } else {
+        const errorData = await response.json();
+        setErrors((prev) => ({ ...prev, ['contactDetails.email']: errorData.message || 'Failed to send OTP' }));
+      }
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, ['contactDetails.email']: 'Network error. Please try again.' }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyPhoneOTP = async (phoneNumber, otp) => {
+    try {
+      setLoading(true);
+
+      // Ensure we have a valid session before making the request
+      await sessionManager.ensureAuthenticated();
+
+      const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-phone-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber, otp }),
+      });
+
+      if (response.ok) {
+        setPhoneVerified(true);
+        setErrors((prev) => ({ ...prev, phoneOtp: undefined }));
+      } else if (response.status === 401) {
+        // Try to re-authenticate and retry
+        try {
+          await sessionManager.ensureAuthenticated();
+          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-phone-otp', {
+            method: 'POST',
+            body: JSON.stringify({ phoneNumber, otp }),
+          });
+
+          if (retryResponse.ok) {
+            setPhoneVerified(true);
+            setErrors((prev) => ({ ...prev, phoneOtp: undefined }));
+          } else {
+            const errorData = await retryResponse.json();
+            setErrors((prev) => ({ ...prev, phoneOtp: errorData.message || 'Invalid OTP after re-authentication' }));
+          }
+        } catch (reAuthError) {
+          setErrors((prev) => ({ ...prev, phoneOtp: 'Authentication failed. Please refresh the page and try again.' }));
+        }
+      } else {
+        const errorData = await response.json();
+        setErrors((prev) => ({ ...prev, phoneOtp: errorData.message || 'Invalid OTP. Please try again.' }));
+      }
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, phoneOtp: 'Network error. Please try again.' }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyEmailOTP = async (email, otp) => {
+    try {
+      setLoading(true);
+
+      // Ensure we have a valid session before making the request
+      await sessionManager.ensureAuthenticated();
+
+      const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-email-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email, otp }),
+      });
+
+      if (response.ok) {
+        setEmailVerified(true);
+        setErrors((prev) => ({ ...prev, emailOtp: undefined }));
+      } else if (response.status === 401) {
+        // Try to re-authenticate and retry
+        try {
+          await sessionManager.ensureAuthenticated();
+          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-email-otp', {
+            method: 'POST',
+            body: JSON.stringify({ email, otp }),
+          });
+
+          if (retryResponse.ok) {
+            setEmailVerified(true);
+            setErrors((prev) => ({ ...prev, emailOtp: undefined }));
+          } else {
+            const errorData = await retryResponse.json();
+            setErrors((prev) => ({ ...prev, emailOtp: errorData.message || 'Invalid OTP after re-authentication' }));
+          }
+        } catch (reAuthError) {
+          setErrors((prev) => ({ ...prev, emailOtp: 'Authentication failed. Please refresh the page and try again.' }));
+        }
+      } else {
+        const errorData = await response.json();
+        setErrors((prev) => ({ ...prev, emailOtp: errorData.message || 'Invalid OTP. Please try again.' }));
+      }
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, emailOtp: 'Network error. Please try again.' }));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -369,6 +551,19 @@ const RegisterForm = () => {
 
   const validateStep = () => {
     let newErrors = {};
+
+    // Step 0 validation - require both phone and email verification
+    if (step === 0) {
+      if (!phoneVerified) {
+        newErrors.phoneVerification = 'Phone verification is required';
+      }
+      if (!emailVerified) {
+        newErrors.emailVerification = 'Email verification is required';
+      }
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    }
+
     const nameFields = [
       { key: 'firstName', value: formData.firstName },
       { key: 'middleName', value: formData.middleName },
@@ -536,7 +731,7 @@ const RegisterForm = () => {
                         if (formData.contactDetails.mobileNumber.length < 10) {
                           setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Enter a valid phone number.' }));
                         } else {
-                          setPhoneOtpSent(true);
+                          sendPhoneOTP(formData.contactDetails.mobileNumber);
                         }
                       }}>Send OTP</button>
                     )}
@@ -550,7 +745,7 @@ const RegisterForm = () => {
                         />
                         <button type="button" className={"verify-btn"} onClick={() => {
                           if (phoneOtp.length >= 4) {
-                            setPhoneVerified(true);
+                            verifyPhoneOTP(formData.contactDetails.mobileNumber, phoneOtp);
                           } else setErrors((prev) => ({ ...prev, phoneOtp: 'Invalid OTP.' }));
                         }}>Verify OTP</button>
                         {errors.phoneOtp && <div className="error-message">{errors.phoneOtp}</div>}
@@ -577,7 +772,7 @@ const RegisterForm = () => {
                         if (!email.includes('@')) {
                           setErrors((prev) => ({ ...prev, ['contactDetails.email']: 'Please enter a valid email address.' }));
                         } else {
-                          setEmailOtpSent(true);
+                          sendEmailOTP(formData.contactDetails.email);
                         }
                       }}>Send OTP</button>
                     )}
@@ -591,7 +786,7 @@ const RegisterForm = () => {
                         />
                         <button type="button" className={"verify-btn"} onClick={() => {
                           if (emailOtp.length >= 4) {
-                            setEmailVerified(true);
+                            verifyEmailOTP(formData.contactDetails.email, emailOtp);
                           } else setErrors((prev) => ({ ...prev, emailOtp: 'Invalid OTP.' }));
                         }}>Verify OTP</button>
                         {errors.emailOtp && <div className="error-message">{errors.emailOtp}</div>}
