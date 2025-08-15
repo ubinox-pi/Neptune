@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -8,7 +8,7 @@ import '@fontsource/roboto/700.css';
 import logo from '../assets/Neptune Bank.png';
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState(1); // 1: Enter details, 2: Verify OTP, 3: Reset password
+  const [step, setStep] = useState(1); 
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
@@ -18,7 +18,6 @@ const ForgotPassword = () => {
     confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
-  const [otpSent, setOtpSent] = useState({ email: false, phone: false });
   const [timer, setTimer] = useState({ email: 0, phone: 0 });
   const [showPassword, setShowPassword] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState({ email: false, phone: false });
@@ -41,7 +40,7 @@ const ForgotPassword = () => {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -53,74 +52,73 @@ const ForgotPassword = () => {
 
   const validateStep1 = () => {
     const newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
-    
+
     if (!formData.phone) {
       newErrors.phone = 'Phone number is required';
     } else if (!/^\d{10}$/.test(formData.phone.replace(/\D/g, ''))) {
       newErrors.phone = 'Phone number must be 10 digits';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
     const newErrors = {};
-    
+
     if (!formData.emailOtp) {
       newErrors.emailOtp = 'Email OTP is required';
     } else if (formData.emailOtp.length !== 6) {
       newErrors.emailOtp = 'OTP must be 6 digits';
     }
-    
+
     if (!formData.phoneOtp) {
       newErrors.phoneOtp = 'Phone OTP is required';
     } else if (formData.phoneOtp.length !== 6) {
       newErrors.phoneOtp = 'OTP must be 6 digits';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep3 = () => {
     const newErrors = {};
-    
+
     if (!formData.newPassword) {
       newErrors.newPassword = 'New password is required';
     } else if (formData.newPassword.length < 8) {
       newErrors.newPassword = 'Password must be at least 8 characters';
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Confirm password is required';
     } else if (formData.newPassword !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const sendOTP = async (type) => {
-    // Simulate OTP sending
+    
     console.log(`Sending OTP to ${type}:`, formData[type]);
-    setOtpSent(prev => ({ ...prev, [type]: true }));
     setTimer(prev => ({ ...prev, [type]: 30 }));
   };
 
   const verifyOTP = async (type) => {
-    // Simulate OTP verification
+    
     const otpValue = type === 'email' ? formData.emailOtp : formData.phoneOtp;
     console.log(`Verifying ${type} OTP:`, otpValue);
+
     
-    // For demo purposes, accept any 6-digit OTP
     if (otpValue.length === 6) {
       setVerificationStatus(prev => ({ ...prev, [type]: true }));
       return true;
@@ -142,7 +140,7 @@ const ForgotPassword = () => {
     if (validateStep2()) {
       const emailValid = verifyOTP('email');
       const phoneValid = verifyOTP('phone');
-      
+
       if (emailValid && phoneValid) {
         setStep(3);
       } else {
@@ -155,7 +153,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     if (validateStep3()) {
       console.log('Password reset successful');
-      // Here you would typically reset the password and redirect
+      
       alert('Password reset successful! You can now login with your new password.');
     }
   };
@@ -190,14 +188,14 @@ const ForgotPassword = () => {
         {errors.phone && <span className="error-message">{errors.phone}</span>}
       </div>
 
-      <motion.button
+      <Motion.button
         type="submit"
         className="submit-button"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         Send OTP
-      </motion.button>
+      </Motion.button>
     </form>
   );
 
@@ -273,14 +271,14 @@ const ForgotPassword = () => {
 
       {errors.general && <div className="error-message general-error">{errors.general}</div>}
 
-      <motion.button
+      <Motion.button
         type="submit"
         className="submit-button"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         Verify OTP
-      </motion.button>
+      </Motion.button>
     </form>
   );
 
@@ -323,32 +321,30 @@ const ForgotPassword = () => {
         {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
       </div>
 
-      <motion.button
+      <Motion.button
         type="submit"
         className="submit-button"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         Reset Password
-      </motion.button>
+      </Motion.button>
     </form>
   );
 
   return (
     <div className="forgot-password-page">
       <div className="forgot-container">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="forgot-form-wrapper"
         >
-          {/* Logo */}
           <div className="forgot-logo">
             <img src={logo} alt="Neptune Bank Logo" />
           </div>
 
-          {/* Header */}
           <div className="forgot-header">
             <h2>
               {step === 1 && 'Forgot Password'}
@@ -362,7 +358,6 @@ const ForgotPassword = () => {
             </p>
           </div>
 
-          {/* Progress indicator */}
           <div className="progress-indicator">
             <div className={`step ${step >= 1 ? 'active' : ''}`}>1</div>
             <div className={`line ${step >= 2 ? 'active' : ''}`}></div>
@@ -371,21 +366,19 @@ const ForgotPassword = () => {
             <div className={`step ${step >= 3 ? 'active' : ''}`}>3</div>
           </div>
 
-          {/* Render current step */}
           {step === 1 && renderStep1()}
           {step === 2 && renderStep2()}
           {step === 3 && renderStep3()}
 
-          {/* Back to Login */}
           <div className="back-to-login">
             <Link to="/login" className="back-link">
               ← Back to Login
             </Link>
           </div>
-        </motion.div>
+        </Motion.div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .forgot-password-page {
           min-height: 100vh;
           background: linear-gradient(135deg, #d4f1f9 0%, #f9fcff 50%, #e6f3ff 100%);

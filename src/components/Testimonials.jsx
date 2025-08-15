@@ -30,28 +30,30 @@ const Testimonials = () => {
     }
   ];
 
-  // Animate counters
   useEffect(() => {
     const duration = 2000;
-    const increment = (target / duration) * 16; // 60fps
-    
-    stats.forEach((stat, index) => {
+    const timerIds = [];
+    const targets = [5, 98, 150, 24];
+
+    targets.forEach((t, index) => {
       let start = 0;
-      const timer = setInterval(() => {
+      const increment = (t / duration) * 16;
+      const id = setInterval(() => {
         start += increment;
-        if (start >= stat.target) {
-          clearInterval(timer);
-        }
+        const nextVal = Math.min(Math.floor(start), t);
         setStats(prev => {
-          const newStats = [...prev];
-          newStats[index].value = Math.min(Math.floor(start), stat.target);
-          return newStats;
+          const next = [...prev];
+          next[index] = { ...next[index], value: nextVal };
+          return next;
         });
+        if (nextVal >= t) clearInterval(id);
       }, 16);
+      timerIds.push(id);
     });
+
+    return () => timerIds.forEach(clearInterval);
   }, []);
 
-  // Auto-rotate testimonials
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
@@ -64,10 +66,10 @@ const Testimonials = () => {
       <div className="trust-banner">
         <div className="trust-logos">
           {['fdic', 'bbb', 'norton'].map(logo => (
-            <img 
-              key={logo} 
-              src={`/trust-${logo}.svg`} 
-              alt={`${logo.toUpperCase()} certified`} 
+            <img
+              key={logo}
+              src={`/trust-${logo}.svg`}
+              alt={`${logo.toUpperCase()} certified`}
             />
           ))}
         </div>
@@ -91,7 +93,7 @@ const Testimonials = () => {
 
         <div className="testimonial-carousel">
           {testimonials.map((testimonial, index) => (
-            <div 
+            <div
               key={index}
               className={`testimonial-card ${index === currentTestimonial ? 'active' : ''}`}
             >
@@ -109,7 +111,7 @@ const Testimonials = () => {
               </div>
             </div>
           ))}
-          
+
           <div className="testimonial-nav">
             {testimonials.map((_, index) => (
               <button

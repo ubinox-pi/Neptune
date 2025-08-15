@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./register.css";
-import {motion} from "framer-motion";
+import "../styles/register.css";
+import {motion as Motion} from "framer-motion";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -10,17 +10,25 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import LinearProgress from '@mui/material/LinearProgress';
 import { sessionManager } from '../utils/sessionManager.js';
 
 const genderOptions = ["MALE", "FEMALE", "OTHER"];
 const maritalStatusOptions = ["SINGLE", "MARRIED", "DIVORCED", "WIDOWED"];
-const occupationOptions = ["EMPLOYED", "SELF_EMPLOYED", "STUDENT", "RETIRED", "UNEMPLOYED"];
+const occupationOptions = ["SALARIED", "GOVERNMENT", "PRIVATE", "PROFESSIONAL", "FARMER", "LABOURER", "HOUSEWIFE", "RETIRED", "SELF_EMPLOYED", "BUSINESS", "STUDENT", "UNEMPLOYED", "ENGINEER", "TEACHER", "OTHER"];
 const categoryOptions = ["GENERAL", "OBC", "SC", "ST"];
 const religionOptions = ["HINDU", "MUSLIM", "CHRISTIAN", "SIKH", "OTHER"];
-const citizenOptions = ["INDIA", "NRI"];
+const citizenOptions = ["INDIAN", "NRI"];
 const relationshipOptions = ["FATHER", "MOTHER", "SPOUSE", "CHILD", "OTHER"];
 
-// Stepper steps
+
 const steps = [
   'Verification',
   'Basic Details',
@@ -31,250 +39,251 @@ const steps = [
 ];
 
 const indianStatesAndUTs = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-  "Andaman and Nicobar Islands",
-  "Chandigarh",
-  "Dadra and Nagar Haveli",
-  "Daman and Diu",
-  "Delhi",
-  "Jammu and Kashmir",
-  "Ladakh",
-  "Lakshadweep",
-  "Puducherry"
+    "ANDHRA PRADESH",
+    "ARUNACHAL PRADESH",
+    "ASSAM",
+    "BIHAR",
+    "CHHATTISGARH",
+    "GOA",
+    "GUJARAT",
+    "HARYANA",
+    "HIMACHAL PRADESH",
+    "JHARKHAND",
+    "KARNATAKA",
+    "KERALA",
+    "MADHYA PRADESH",
+    "MAHARASHTRA",
+    "MANIPUR",
+    "MEGHALAYA",
+    "MIZORAM",
+    "NAGALAND",
+    "ODISHA",
+    "PUNJAB",
+    "RAJASTHAN",
+    "SIKKIM",
+    "TAMIL NADU",
+    "TELANGANA",
+    "TRIPURA",
+    "UTTAR PRADESH",
+    "UTTARAKHAND",
+    "WEST BENGAL",
+    "ANDAMAN AND NICOBAR ISLANDS",
+    "CHANDIGARH",
+    "DADRA AND NAGAR HAVELI",
+    "DAMAN AND DIU",
+    "DELHI",
+    "JAMMU AND KASHMIR",
+    "LADAKH",
+    "LAKSHADWEEP",
+    "PUDUCHERRY"
 ];
 
 const countryOptions = [
-  "Afghanistan",
-  "Albania",
-  "Algeria",
-  "Andorra",
-  "Angola",
-  "Antigua and Barbuda",
-  "Argentina",
-  "Armenia",
-  "Australia",
-  "Austria",
-  "Azerbaijan",
-  "Bahamas",
-  "Bahrain",
-  "Bangladesh",
-  "Barbados",
-  "Belarus",
-  "Belgium",
-  "Belize",
-  "Benin",
-  "Bhutan",
-  "Bolivia",
-  "Bosnia and Herzegovina",
-  "Botswana",
-  "Brazil",
-  "Brunei",
-  "Bulgaria",
-  "Burkina Faso",
-  "Burundi",
-  "Cabo Verde",
-  "Cambodia",
-  "Cameroon",
-  "Canada",
-  "Central African Republic",
-  "Chad",
-  "Chile",
-  "China",
-  "Colombia",
-  "Comoros",
-  "Congo, Democratic Republic of the",
-  "Congo, Republic of the",
-  "Costa Rica",
-  "Cote d'Ivoire",
-  "Croatia",
-  "Cuba",
-  "Cyprus",
-  "Czech Republic",
-  "Denmark",
-  "Djibouti",
-  "Dominica",
-  "Dominican Republic",
-  "Ecuador",
-  "Egypt",
-  "El Salvador",
-  "Equatorial Guinea",
-  "Eritrea",
-  "Estonia",
-  "Eswatini",
-  "Ethiopia",
-  "Fiji",
-  "Finland",
-  "France",
-  "Gabon",
-  "Gambia",
-  "Georgia",
-  "Germany",
-  "Ghana",
-  "Greece",
-  "Grenada",
-  "Guatemala",
-  "Guinea",
-  "Guinea-Bissau",
-  "Guyana",
-  "Haiti",
-  "Honduras",
-  "Hungary",
-  "Iceland",
-  "India",
-  "Indonesia",
-  "Iran",
-  "Iraq",
-  "Ireland",
-  "Israel",
-  "Italy",
-  "Jamaica",
-  "Japan",
-  "Jordan",
-  "Kazakhstan",
-  "Kenya",
-  "Kiribati",
-  "Korea, North",
-  "Korea, South",
-  "Kosovo",
-  "Kuwait",
-  "Kyrgyzstan",
-  "Laos",
-  "Latvia",
-  "Lebanon",
-  "Lesotho",
-  "Liberia",
-  "Libya",
-  "Liechtenstein",
-  "Lithuania",
-  "Luxembourg",
-  "Madagascar",
-  "Malawi",
-  "Malaysia",
-  "Maldives",
-  "Mali",
-  "Malta",
-  "Marshall Islands",
-  "Mauritania",
-  "Mauritius",
-  "Mexico",
-  "Micronesia",
-  "Moldova",
-  "Monaco",
-  "Mongolia",
-  "Montenegro",
-  "Morocco",
-  "Mozambique",
-  "Myanmar",
-  "Namibia",
-  "Nauru",
-  "Nepal",
-  "Netherlands",
-  "New Zealand",
-  "Nicaragua",
-  "Niger",
-  "Nigeria",
-  "North Macedonia",
-  "Norway",
-  "Oman",
-  "Pakistan",
-  "Palau",
-  "Palestine",
-  "Panama",
-  "Papua New Guinea",
-  "Paraguay",
-  "Peru",
-  "Philippines",
-  "Poland",
-  "Portugal",
-  "Qatar",
-  "Romania",
-  "Russia",
-  "Rwanda",
-  "Saint Kitts and Nevis",
-  "Saint Lucia",
-  "Saint Vincent and the Grenadines",
-  "Samoa",
-  "San Marino",
-  "Sao Tome and Principe",
-  "Saudi Arabia",
-  "Senegal",
-  "Serbia",
-  "Seychelles",
-  "Sierra Leone",
-  "Singapore",
-  "Slovakia",
-  "Slovenia",
-  "Solomon Islands",
-  "Somalia",
-  "South Africa",
-  "South Sudan",
-  "Spain",
-  "Sri Lanka",
-  "Sudan",
-  "Suriname",
-  "Sweden",
-  "Switzerland",
-  "Syria",
-  "Taiwan",
-  "Tajikistan",
-  "Tanzania",
-  "Thailand",
-  "Timor-Leste",
-  "Togo",
-  "Tonga",
-  "Trinidad and Tobago",
-  "Tunisia",
-  "Turkey",
-  "Turkmenistan",
-  "Tuvalu",
-  "Uganda",
-  "Ukraine",
-  "United Arab Emirates",
-  "United Kingdom",
-  "United States",
-  "Uruguay",
-  "Uzbekistan",
-  "Vanuatu",
-  "Vatican City",
-  "Venezuela",
-  "Vietnam",
-  "Yemen",
-  "Zambia",
-  "Zimbabwe"
+    "AFGHANISTAN",
+    "ALBANIA",
+    "ALGERIA",
+    "ANDORRA",
+    "ANGOLA",
+    "ANTIGUA AND BARBUDA",
+    "ARGENTINA",
+    "ARMENIA",
+    "AUSTRALIA",
+    "AUSTRIA",
+    "AZERBAIJAN",
+    "BAHAMAS",
+    "BAHRAIN",
+    "BANGLADESH",
+    "BARBADOS",
+    "BELARUS",
+    "BELGIUM",
+    "BELIZE",
+    "BENIN",
+    "BHUTAN",
+    "BOLIVIA",
+    "BOSNIA AND HERZEGOVINA",
+    "BOTSWANA",
+    "BRAZIL",
+    "BRUNEI",
+    "BULGARIA",
+    "BURKINA FASO",
+    "BURUNDI",
+    "CABO VERDE",
+    "CAMBODIA",
+    "CAMEROON",
+    "CANADA",
+    "CENTRAL AFRICAN REPUBLIC",
+    "CHAD",
+    "CHILE",
+    "CHINA",
+    "COLOMBIA",
+    "COMOROS",
+    "CONGO, DEMOCRATIC REPUBLIC OF THE",
+    "CONGO, REPUBLIC OF THE",
+    "COSTA RICA",
+    "COTE D'IVOIRE",
+    "CROATIA",
+    "CUBA",
+    "CYPRUS",
+    "CZECH REPUBLIC",
+    "DENMARK",
+    "DJIBOUTI",
+    "DOMINICA",
+    "DOMINICAN REPUBLIC",
+    "ECUADOR",
+    "EGYPT",
+    "EL SALVADOR",
+    "EQUATORIAL GUINEA",
+    "ERITREA",
+    "ESTONIA",
+    "ESWATINI",
+    "ETHIOPIA",
+    "FIJI",
+    "FINLAND",
+    "FRANCE",
+    "GABON",
+    "GAMBIA",
+    "GEORGIA",
+    "GERMANY",
+    "GHANA",
+    "GREECE",
+    "GRENADA",
+    "GUATEMALA",
+    "GUINEA",
+    "GUINEA-BISSAU",
+    "GUYANA",
+    "HAITI",
+    "HONDURAS",
+    "HUNGARY",
+    "ICELAND",
+    "INDIA",
+    "INDONESIA",
+    "IRAN",
+    "IRAQ",
+    "IRELAND",
+    "ISRAEL",
+    "ITALY",
+    "JAMAICA",
+    "JAPAN",
+    "JORDAN",
+    "KAZAKHSTAN",
+    "KENYA",
+    "KIRIBATI",
+    "KOREA, NORTH",
+    "KOREA, SOUTH",
+    "KOSOVO",
+    "KUWAIT",
+    "KYRGYZSTAN",
+    "LAOS",
+    "LATVIA",
+    "LEBANON",
+    "LESOTHO",
+    "LIBERIA",
+    "LIBYA",
+    "LIECHTENSTEIN",
+    "LITHUANIA",
+    "LUXEMBOURG",
+    "MADAGASCAR",
+    "MALAWI",
+    "MALAYSIA",
+    "MALDIVES",
+    "MALI",
+    "MALTA",
+    "MARSHALL ISLANDS",
+    "MAURITANIA",
+    "MAURITIUS",
+    "MEXICO",
+    "MICRONESIA",
+    "MOLDOVA",
+    "MONACO",
+    "MONGOLIA",
+    "MONTENEGRO",
+    "MOROCCO",
+    "MOZAMBIQUE",
+    "MYANMAR",
+    "NAMIBIA",
+    "NAURU",
+    "NEPAL",
+    "NETHERLANDS",
+    "NEW ZEALAND",
+    "NICARAGUA",
+    "NIGER",
+    "NIGERIA",
+    "NORTH MACEDONIA",
+    "NORWAY",
+    "OMAN",
+    "PAKISTAN",
+    "PALAU",
+    "PALESTINE",
+    "PANAMA",
+    "PAPUA NEW GUINEA",
+    "PARAGUAY",
+    "PERU",
+    "PHILIPPINES",
+    "POLAND",
+    "PORTUGAL",
+    "QATAR",
+    "ROMANIA",
+    "RUSSIA",
+    "RWANDA",
+    "SAINT KITTS AND NEVIS",
+    "SAINT LUCIA",
+    "SAINT VINCENT AND THE GRENADINES",
+    "SAMOA",
+    "SAN MARINO",
+    "SAO TOME AND PRINCIPE",
+    "SAUDI ARABIA",
+    "SENEGAL",
+    "SERBIA",
+    "SEYCHELLES",
+    "SIERRA LEONE",
+    "SINGAPORE",
+    "SLOVAKIA",
+    "SLOVENIA",
+    "SOLOMON ISLANDS",
+    "SOMALIA",
+    "SOUTH AFRICA",
+    "SOUTH SUDAN",
+    "SPAIN",
+    "SRI LANKA",
+    "SUDAN",
+    "SURINAME",
+    "SWEDEN",
+    "SWITZERLAND",
+    "SYRIA",
+    "TAIWAN",
+    "TAJIKISTAN",
+    "TANZANIA",
+    "THAILAND",
+    "TIMOR-LESTE",
+    "TOGO",
+    "TONGA",
+    "TRINIDAD AND TOBAGO",
+    "TUNISIA",
+    "TURKEY",
+    "TURKMENISTAN",
+    "TUVALU",
+    "UGANDA",
+    "UKRAINE",
+    "UNITED ARAB EMIRATES",
+    "UNITED KINGDOM",
+    "UNITED STATES",
+    "URUGUAY",
+    "UZBEKISTAN",
+    "VANUATU",
+    "VATICAN CITY",
+    "VENEZUELA",
+    "VIETNAM",
+    "YEMEN",
+    "ZAMBIA",
+    "ZIMBABWE"
 ];
+
 
 const RegisterForm = () => {
   const [step, setStep] = useState(0);
 
   const [formData, setFormData] = useState({
-    // UsersRequestDTO fields
+
     firstName: "",
     middleName: "",
     lastName: "",
@@ -338,49 +347,126 @@ const RegisterForm = () => {
     voterId: null,
     passport: null,
     drivingLicense: null,
+    photo: null,
+    signature: null,
   });
   const [loading, setLoading] = useState(false);
+  // Added: resend timers (in seconds)
+  const [phoneResendSeconds, setPhoneResendSeconds] = useState(0);
+  const [emailResendSeconds, setEmailResendSeconds] = useState(0);
+  // Added: submit dialog state
+  const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState('idle'); // idle | loading | success | error
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [submitInlineError, setSubmitInlineError] = useState('');
+  // Added: redirect countdown (seconds)
+  const [redirectCountdown, setRedirectCountdown] = useState(0);
+
+  // Tick down phone timer
+  useEffect(() => {
+    if (phoneResendSeconds <= 0) return;
+    const id = setInterval(() => {
+      setPhoneResendSeconds((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [phoneResendSeconds]);
+
+  // Tick down email timer
+  useEffect(() => {
+    if (emailResendSeconds <= 0) return;
+    const id = setInterval(() => {
+      setEmailResendSeconds((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [emailResendSeconds]);
+
+  // Start a 5s redirect countdown once submission succeeds and dialog is open
+  useEffect(() => {
+    if (submitStatus !== 'success' || !submitDialogOpen) return;
+    setRedirectCountdown(5);
+    const intervalId = setInterval(() => {
+      setRedirectCountdown((s) => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    const timeoutId = setTimeout(() => {
+      window.location.href = '/';
+    }, 5000);
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, [submitStatus, submitDialogOpen]);
+
+  // Helper to format mm:ss
+  const formatMMSS = (total) => {
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
 
   const sendPhoneOTP = async (phoneNumber) => {
     try {
       setLoading(true);
-
-      // Ensure we have a valid session before making the request
       await sessionManager.ensureAuthenticated();
-
       const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-phone', {
         method: 'POST',
-        body: JSON.stringify({ phoneNumber }),
+        body: JSON.stringify({ phone: phoneNumber}),
       });
-
       if (response.ok) {
         setPhoneOtpSent(true);
+        setPhoneResendSeconds(120);
         setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: undefined }));
-      } else if (response.status === 401) {
-        // Try to re-authenticate and retry
-        try {
-          await sessionManager.ensureAuthenticated();
-          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-phone', {
-            method: 'POST',
-            body: JSON.stringify({ phoneNumber }),
-          });
-
-          if (retryResponse.ok) {
-            setPhoneOtpSent(true);
-            setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: undefined }));
-          } else {
-            const errorData = await retryResponse.json();
-            setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: errorData.message || 'Failed to send OTP after re-authentication' }));
-          }
-        } catch (reAuthError) {
-          setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Authentication failed. Please refresh the page and try again.' }));
-        }
       } else {
-        const errorData = await response.json();
-        setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: errorData.message || 'Failed to send OTP' }));
+        let msg = 'Failed to send OTP';
+        try {
+          const ct = response.headers.get('content-type') || '';
+          msg = ct.includes('application/json') ? (await response.json()).message || msg : (await response.text()) || msg;
+        } catch (e) {
+          console.warn('Failed to read error response for sendPhoneOTP:', e);
+        }
+        setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: msg }));
       }
-    } catch (error) {
+    } catch {
       setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Network error. Please try again.' }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Added: resend phone OTP convenience wrapper
+  const resendPhoneOTP = async () => {
+    if (phoneResendSeconds > 0 || phoneVerified) return;
+    try {
+      setLoading(true);
+      await sessionManager.ensureAuthenticated();
+      const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/resend-otp-phone', {
+        method: 'POST',
+        body: JSON.stringify({ phone: formData.contactDetails.mobileNumber }),
+      });
+      if (response.ok) {
+        // backend returns { status, message, code } on success
+        setPhoneOtpSent(true);
+        setPhoneResendSeconds(120); // restart 2-minute cooldown
+        setErrors((prev) => ({ ...prev, phoneOtp: undefined, ['contactDetails.mobileNumber']: undefined }));
+      } else {
+        // backend returns { error, message, status } on error
+        let msg = 'Failed to resend OTP';
+        try {
+          const ct = response.headers.get('content-type') || '';
+          if (ct.includes('application/json')) {
+            const data = await response.json();
+            msg = data.error || data.message || msg;
+          } else {
+            const text = await response.text();
+            msg = text || msg;
+          }
+        } catch (e) {
+          console.warn('Failed to read error response for resendPhoneOTP:', e);
+        }
+        setErrors((prev) => ({ ...prev, phoneOtp: msg }));
+      }
+    } catch (e) {
+      console.warn('Network error in resendPhoneOTP:', e);
+      setErrors((prev) => ({ ...prev, phoneOtp: 'Network error. Please try again.' }));
     } finally {
       setLoading(false);
     }
@@ -389,87 +475,61 @@ const RegisterForm = () => {
   const sendEmailOTP = async (email) => {
     try {
       setLoading(true);
-
-      // Ensure we have a valid session before making the request
       await sessionManager.ensureAuthenticated();
-
       const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-email', {
         method: 'POST',
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email }),
       });
-
       if (response.ok) {
         setEmailOtpSent(true);
+        setEmailResendSeconds(120); // start 2-minute cooldown
         setErrors((prev) => ({ ...prev, ['contactDetails.email']: undefined }));
-      } else if (response.status === 401) {
-        // Try to re-authenticate and retry
-        try {
-          await sessionManager.ensureAuthenticated();
-          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/send-otp-email', {
-            method: 'POST',
-            body: JSON.stringify({ email }),
-          });
-
-          if (retryResponse.ok) {
-            setEmailOtpSent(true);
-            setErrors((prev) => ({ ...prev, ['contactDetails.email']: undefined }));
-          } else {
-            const errorData = await retryResponse.json();
-            setErrors((prev) => ({ ...prev, ['contactDetails.email']: errorData.message || 'Failed to send OTP after re-authentication' }));
-          }
-        } catch (reAuthError) {
-          setErrors((prev) => ({ ...prev, ['contactDetails.email']: 'Authentication failed. Please refresh the page and try again.' }));
-        }
       } else {
-        const errorData = await response.json();
-        setErrors((prev) => ({ ...prev, ['contactDetails.email']: errorData.message || 'Failed to send OTP' }));
+        let msg = 'Failed to send OTP';
+        try {
+          const ct = response.headers.get('content-type') || '';
+          msg = ct.includes('application/json') ? (await response.json()).message || msg : (await response.text()) || msg;
+        } catch (e) {
+          console.warn('Failed to read error response for sendEmailOTP:', e);
+        }
+        setErrors((prev) => ({ ...prev, ['contactDetails.email']: msg }));
       }
-    } catch (error) {
+    } catch {
       setErrors((prev) => ({ ...prev, ['contactDetails.email']: 'Network error. Please try again.' }));
     } finally {
       setLoading(false);
     }
   };
 
+  // Added: resend email OTP convenience wrapper
+  const resendEmailOTP = async () => {
+    if (emailResendSeconds > 0 || emailVerified) return;
+    await sendEmailOTP(formData.contactDetails.email);
+  };
+
   const verifyPhoneOTP = async (phoneNumber, otp) => {
     try {
       setLoading(true);
-
-      // Ensure we have a valid session before making the request
       await sessionManager.ensureAuthenticated();
-
       const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-phone-otp', {
         method: 'POST',
-        body: JSON.stringify({ phoneNumber, otp }),
+        body: JSON.stringify({ phoneOrEmail: phoneNumber, otp: otp }),
       });
-
       if (response.ok) {
         setPhoneVerified(true);
+        setPhoneResendSeconds(0);
         setErrors((prev) => ({ ...prev, phoneOtp: undefined }));
-      } else if (response.status === 401) {
-        // Try to re-authenticate and retry
-        try {
-          await sessionManager.ensureAuthenticated();
-          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-phone-otp', {
-            method: 'POST',
-            body: JSON.stringify({ phoneNumber, otp }),
-          });
-
-          if (retryResponse.ok) {
-            setPhoneVerified(true);
-            setErrors((prev) => ({ ...prev, phoneOtp: undefined }));
-          } else {
-            const errorData = await retryResponse.json();
-            setErrors((prev) => ({ ...prev, phoneOtp: errorData.message || 'Invalid OTP after re-authentication' }));
-          }
-        } catch (reAuthError) {
-          setErrors((prev) => ({ ...prev, phoneOtp: 'Authentication failed. Please refresh the page and try again.' }));
-        }
       } else {
-        const errorData = await response.json();
-        setErrors((prev) => ({ ...prev, phoneOtp: errorData.message || 'Invalid OTP. Please try again.' }));
+        let msg = 'Invalid OTP. Please try again.';
+        try {
+          const ct = response.headers.get('content-type') || '';
+          msg = ct.includes('application/json') ? (await response.json()).message || msg : (await response.text()) || msg;
+        } catch (e) {
+          console.warn('Failed to read error response for verifyPhoneOTP:', e);
+        }
+        setErrors((prev) => ({ ...prev, phoneOtp: msg }));
       }
-    } catch (error) {
+    } catch {
       setErrors((prev) => ({ ...prev, phoneOtp: 'Network error. Please try again.' }));
     } finally {
       setLoading(false);
@@ -479,42 +539,26 @@ const RegisterForm = () => {
   const verifyEmailOTP = async (email, otp) => {
     try {
       setLoading(true);
-
-      // Ensure we have a valid session before making the request
       await sessionManager.ensureAuthenticated();
-
       const response = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-email-otp', {
         method: 'POST',
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ phoneOrEmail: email, otp: otp }),
       });
-
       if (response.ok) {
         setEmailVerified(true);
+        setEmailResendSeconds(0);
         setErrors((prev) => ({ ...prev, emailOtp: undefined }));
-      } else if (response.status === 401) {
-        // Try to re-authenticate and retry
-        try {
-          await sessionManager.ensureAuthenticated();
-          const retryResponse = await sessionManager.makeAuthenticatedRequest('/messages/otp/verify-email-otp', {
-            method: 'POST',
-            body: JSON.stringify({ email, otp }),
-          });
-
-          if (retryResponse.ok) {
-            setEmailVerified(true);
-            setErrors((prev) => ({ ...prev, emailOtp: undefined }));
-          } else {
-            const errorData = await retryResponse.json();
-            setErrors((prev) => ({ ...prev, emailOtp: errorData.message || 'Invalid OTP after re-authentication' }));
-          }
-        } catch (reAuthError) {
-          setErrors((prev) => ({ ...prev, emailOtp: 'Authentication failed. Please refresh the page and try again.' }));
-        }
       } else {
-        const errorData = await response.json();
-        setErrors((prev) => ({ ...prev, emailOtp: errorData.message || 'Invalid OTP. Please try again.' }));
+        let msg = 'Invalid OTP. Please try again.';
+        try {
+          const ct = response.headers.get('content-type') || '';
+          msg = ct.includes('application/json') ? (await response.json()).message || msg : (await response.text()) || msg;
+        } catch (e) {
+          console.warn('Failed to read error response for verifyEmailOTP:', e);
+        }
+        setErrors((prev) => ({ ...prev, emailOtp: msg }));
       }
-    } catch (error) {
+    } catch {
       setErrors((prev) => ({ ...prev, emailOtp: 'Network error. Please try again.' }));
     } finally {
       setLoading(false);
@@ -541,8 +585,13 @@ const RegisterForm = () => {
 
   const handleKycFileChange = (e, field) => {
     const file = e.target.files[0];
-    if (file && !["image/jpeg", "application/pdf"].includes(file.type)) {
-      setErrors((prev) => ({ ...prev, [field + "File"]: "Only JPG or PDF allowed" }));
+    if (file && (field === 'photo' || field === 'signature')) {
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setErrors((prev) => ({ ...prev, [field + "File"]: "Only JPG/PNG allowed" }));
+        return;
+      }
+    } else if (file && !["image/jpeg", "image/png", "application/pdf"].includes(file.type)) {
+      setErrors((prev) => ({ ...prev, [field + "File"]: "Only JPG/PNG or PDF allowed" }));
       return;
     }
     setKycFiles((prev) => ({ ...prev, [field]: file }));
@@ -552,7 +601,7 @@ const RegisterForm = () => {
   const validateStep = () => {
     let newErrors = {};
 
-    // Step 0 validation - require both phone and email verification
+
     if (step === 0) {
       if (!phoneVerified) {
         newErrors.phoneVerification = 'Phone verification is required';
@@ -613,6 +662,7 @@ const RegisterForm = () => {
       if (!c.zip) newErrors['contactDetails.zip'] = 'Pin Code is required';
       if (!/^[1-9][0-9]{5}$/.test(c.zip)) newErrors['contactDetails.zip'] = 'Pin Code must be 6 digits';
       if (!c.country) newErrors['contactDetails.country'] = 'Country is required';
+      if (!c.landmark) newErrors['contactDetails.landmark'] = 'Landmark is required';
     }
     if (step === 3) {
       const n = formData.nominee;
@@ -643,28 +693,31 @@ const RegisterForm = () => {
     if (step === 4) {
       const k = formData.kyc;
       const n = formData.nominee;
-      // Aadhaar
+
       if (!k.aadhaarNumber) newErrors['kyc.aadhaarNumber'] = 'Aadhaar Number is required';
       else if (!/^[0-9]{12}$/.test(k.aadhaarNumber)) newErrors['kyc.aadhaarNumber'] = 'Aadhaar must be 12 digits';
       else if (k.aadhaarNumber === n.nomineeAadhaar) newErrors['kyc.aadhaarNumber'] = 'Aadhaar cannot match nominee Aadhaar';
       if (!kycFiles.aadhaar) newErrors['aadhaarFile'] = 'Aadhaar file is required';
-      // PAN
+
       if (!k.panNumber) newErrors['kyc.panNumber'] = 'PAN Number is required';
       else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(k.panNumber.toUpperCase())) newErrors['kyc.panNumber'] = 'Invalid PAN format';
       else if (k.panNumber.toUpperCase() === n.nomineePan.toUpperCase()) newErrors['kyc.panNumber'] = 'PAN cannot match nominee PAN';
       if (!kycFiles.pan) newErrors['panFile'] = 'PAN file is required';
-      // Voter ID
+
       if (k.voterId) {
         if (!kycFiles.voterId) newErrors['voterIdFile'] = 'Voter ID file is required';
       }
-      // Passport
+
       if (k.passportNumber) {
         if (!kycFiles.passport) newErrors['passportFile'] = 'Passport file is required';
       }
-      // Driving License
+
       if (k.drivingLicenseNumber) {
         if (!kycFiles.drivingLicense) newErrors['drivingLicenseFile'] = 'Driving License file is required';
       }
+
+      if (!kycFiles.photo) newErrors['photoFile'] = 'Photo is required';
+      if (!kycFiles.signature) newErrors['signatureFile'] = 'Signature is required';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -682,11 +735,93 @@ const RegisterForm = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = (e) => {
+
+  const submitApplication = async () => {
+    try {
+      await sessionManager.ensureAuthenticated();
+
+
+      const userPayload = {
+        firstName: formData.firstName,
+        middleName: formData.middleName,
+        lastName: formData.lastName,
+        dateOfBirth: formData.dateOfBirth,
+        gender: formData.gender,
+        fatherName: formData.fatherName,
+        motherName: formData.motherName,
+        maritalStatus: formData.maritalStatus,
+        spouseName: formData.spouseName,
+        occupation: formData.occupation,
+        salary: formData.salary,
+        citizen: formData.citizen,
+        category: formData.category,
+        religion: formData.religion,
+        contactDetails: { ...formData.contactDetails },
+        nominee: { ...formData.nominee },
+        kyc: { ...formData.kyc },
+      };
+
+      const fd = new FormData();
+      fd.append('user', new Blob([JSON.stringify(userPayload)], { type: 'application/json' }));
+
+
+      if (kycFiles.aadhaar) fd.append('aadhaar', kycFiles.aadhaar, kycFiles.aadhaar.name || 'aadhaar');
+      if (kycFiles.pan) fd.append('pan', kycFiles.pan, kycFiles.pan.name || 'pan');
+      if (kycFiles.voterId) fd.append('voterId', kycFiles.voterId, kycFiles.voterId.name || 'voterId');
+      if (kycFiles.passport) fd.append('passport', kycFiles.passport, kycFiles.passport.name || 'passport');
+      if (kycFiles.drivingLicense) fd.append('drivingLicense', kycFiles.drivingLicense, kycFiles.drivingLicense.name || 'drivingLicense');
+      if (kycFiles.photo) fd.append('photo', kycFiles.photo, kycFiles.photo.name || 'photo');
+      if (kycFiles.signature) fd.append('signature', kycFiles.signature, kycFiles.signature.name || 'signature');
+
+      const response = await sessionManager.makeMultipartRequest('/users/create', fd, { 'Accept': 'application/json' });
+
+
+      let message = '';
+      try {
+        const ct = response.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await response.json();
+          message = data.message || data.error || '';
+        } else {
+          message = await response.text();
+        }
+      } catch {
+        // ignore body parse errors
+      }
+
+      return { ok: response.ok, message: message || (response.ok ? 'Application submitted successfully.' : 'Submission failed.') };
+    } catch (e) {
+      return { ok: false, message: 'Network error. Please try again. '+e.message };
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateStep()) {
-      // placeholder: handle form submission
-      console.log('Submitting form data:', formData);
+    // Only allow actual submit on final step
+    if (step !== 5) return;
+    setSubmitInlineError('');
+    if (!validateStep()) return;
+    setSubmitDialogOpen(true);
+    setSubmitStatus('loading');
+    setSubmitMessage('Submitting your application...');
+    try {
+      const result = await submitApplication();
+      if (result.ok) {
+        setSubmitStatus('success');
+        setSubmitMessage(result.message || 'Registration successful.');
+
+      } else {
+
+        setSubmitDialogOpen(false);
+        setSubmitStatus('idle');
+        setSubmitMessage('');
+        setSubmitInlineError(result.message || 'Submission failed.');
+      }
+    } catch (err) {
+      setSubmitDialogOpen(false);
+      setSubmitStatus('idle');
+      setSubmitMessage('');
+      setSubmitInlineError('Something went wrong. Please try again. '+err.message);
     }
   };
 
@@ -697,7 +832,7 @@ const RegisterForm = () => {
 
   return (
     <div className="register-container">
-      {/* Stepper moved above and outside the form box, centered, and numbered from 0 */}
+
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, mt: 4 }}>
         <Stepper activeStep={step} alternativeLabel>
           {steps.map((label, idx) => (
@@ -711,10 +846,16 @@ const RegisterForm = () => {
         Register - Step {step}: {steps[step]}
       </h2>
       <Box sx={{ maxWidth: 700, mx: 'auto', mb: 3, mt: 2, bgcolor: 'white', borderRadius: 2, p: 2, boxShadow: 1 }}>
+        {}
+        {submitInlineError && (
+          <div style={{ marginBottom: 12, padding: '10px 12px', borderRadius: 6, background: '#fdecea', color: '#611a15', border: '1px solid #f5c2c0' }}>
+            {submitInlineError}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           {step === 0 && (
                 <div className="verification-step">
-                  {/* Phone Verification */}
+
                   <div className="form-group">
                     <label>Phone Number *</label>
                     <input
@@ -722,12 +863,12 @@ const RegisterForm = () => {
                       value={formData.contactDetails.mobileNumber}
                       onChange={(e) => handleNestedChange(e, "contactDetails")}
                       required
-                      disabled={phoneVerified}
+                      disabled={phoneOtpSent || phoneVerified}
                       className={getError('mobileNumber', 'contactDetails') ? 'error-input' : ''}
                     />
                     {getError('mobileNumber', 'contactDetails') && <div className="error-message">{getError('mobileNumber', 'contactDetails')}</div>}
                     {!phoneOtpSent && !phoneVerified && (
-                      <button type="button" className={"otp-btn"} onClick={() => {
+                      <button type="button" className={"otp-btn"} disabled={loading} onClick={() => {
                         if (formData.contactDetails.mobileNumber.length < 10) {
                           setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Enter a valid phone number.' }));
                         } else {
@@ -743,17 +884,35 @@ const RegisterForm = () => {
                           value={phoneOtp}
                           onChange={(e) => setPhoneOtp(e.target.value)}
                         />
-                        <button type="button" className={"verify-btn"} onClick={() => {
-                          if (phoneOtp.length >= 4) {
-                            verifyPhoneOTP(formData.contactDetails.mobileNumber, phoneOtp);
-                          } else setErrors((prev) => ({ ...prev, phoneOtp: 'Invalid OTP.' }));
-                        }}>Verify OTP</button>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                          <button type="button" className={"verify-btn"} disabled={loading} onClick={() => {
+                            if (phoneOtp.length >= 4) {
+                              verifyPhoneOTP(formData.contactDetails.mobileNumber, phoneOtp);
+                            } else setErrors((prev) => ({ ...prev, phoneOtp: 'Invalid OTP.' }));
+                          }}>Verify OTP</button>
+                          <button
+                            type="button"
+                            className={"otp-btn"}
+                            disabled={loading || phoneResendSeconds > 0}
+                            onClick={resendPhoneOTP}
+                          >{phoneResendSeconds > 0 ? `Resend in ${formatMMSS(phoneResendSeconds)}` : 'Resend OTP'}</button>
+                          <button
+                            type="button"
+                            className={"otp-btn"}
+                            onClick={() => {
+                              setPhoneOtpSent(false);
+                              setPhoneOtp('');
+                              setPhoneResendSeconds(0);
+                              setErrors((prev) => ({ ...prev, phoneOtp: undefined }));
+                            }}
+                          >Change phone number</button>
+                        </div>
                         {errors.phoneOtp && <div className="error-message">{errors.phoneOtp}</div>}
                       </>
                     )}
                     {phoneVerified && <span className="verified">Phone Verified</span>}
                   </div>
-                  {/* Email Verification */}
+
                   <div className="form-group">
                     <label>Email Address *</label>
                     <input
@@ -762,12 +921,12 @@ const RegisterForm = () => {
                       value={formData.contactDetails.email}
                       onChange={(e) => handleNestedChange(e, "contactDetails")}
                       required
-                      disabled={emailVerified}
+                      disabled={emailOtpSent || emailVerified}
                       className={getError('email', 'contactDetails') ? 'error-input' : ''}
                     />
                     {getError('email', 'contactDetails') && <div className="error-message">{getError('email', 'contactDetails')}</div>}
                     {!emailOtpSent && !emailVerified && (
-                      <button type="button" className={"otp-btn"} onClick={() => {
+                      <button type="button" className={"otp-btn"} disabled={loading} onClick={() => {
                         const email = formData.contactDetails.email;
                         if (!email.includes('@')) {
                           setErrors((prev) => ({ ...prev, ['contactDetails.email']: 'Please enter a valid email address.' }));
@@ -784,11 +943,29 @@ const RegisterForm = () => {
                           value={emailOtp}
                           onChange={(e) => setEmailOtp(e.target.value)}
                         />
-                        <button type="button" className={"verify-btn"} onClick={() => {
-                          if (emailOtp.length >= 4) {
-                            verifyEmailOTP(formData.contactDetails.email, emailOtp);
-                          } else setErrors((prev) => ({ ...prev, emailOtp: 'Invalid OTP.' }));
-                        }}>Verify OTP</button>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                          <button type="button" className={"verify-btn"} disabled={loading} onClick={() => {
+                            if (emailOtp.length >= 4) {
+                              verifyEmailOTP(formData.contactDetails.email, emailOtp);
+                            } else setErrors((prev) => ({ ...prev, emailOtp: 'Invalid OTP.' }));
+                          }}>Verify OTP</button>
+                          <button
+                            type="button"
+                            className={"otp-btn"}
+                            disabled={loading || emailResendSeconds > 0}
+                            onClick={resendEmailOTP}
+                          >{emailResendSeconds > 0 ? `Resend in ${formatMMSS(emailResendSeconds)}` : 'Resend OTP'}</button>
+                          <button
+                            type="button"
+                            className={"otp-btn"}
+                            onClick={() => {
+                              setEmailOtpSent(false);
+                              setEmailOtp('');
+                              setEmailResendSeconds(0);
+                              setErrors((prev) => ({ ...prev, emailOtp: undefined }));
+                            }}
+                          >Change email address</button>
+                        </div>
                         {errors.emailOtp && <div className="error-message">{errors.emailOtp}</div>}
                       </>
                     )}
@@ -1153,12 +1330,15 @@ const RegisterForm = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Landmark</label>
+                  <label>Landmark *</label>
                   <input
                       name="landmark"
                       value={formData.contactDetails.landmark}
                       onChange={(e => handleNestedChange(e, "contactDetails"))}
+                      required
+                      className={getError('landmark', 'contactDetails') ? 'error-input' : ''}
                   />
+                  {getError('landmark', 'contactDetails') && <div className="error-message">{getError('landmark', 'contactDetails')}</div>}
                 </div>
 
                 <div className="form-group">
@@ -1326,7 +1506,7 @@ const RegisterForm = () => {
                   {getError('aadhaarNumber', 'kyc') && <div className="error-message">{getError('aadhaarNumber', 'kyc')}</div>}
                   <input
                     type="file"
-                    accept=".jpg,.jpeg,application/pdf"
+                    accept=".jpg,.jpeg,.png,application/pdf"
                     onChange={e => handleKycFileChange(e, 'aadhaar')}
                     required
                   />
@@ -1344,7 +1524,7 @@ const RegisterForm = () => {
                   {getError('panNumber', 'kyc') && <div className="error-message">{getError('panNumber', 'kyc')}</div>}
                   <input
                     type="file"
-                    accept=".jpg,.jpeg,application/pdf"
+                    accept=".jpg,.jpeg,.png,application/pdf"
                     onChange={e => handleKycFileChange(e, 'pan')}
                     required
                   />
@@ -1360,7 +1540,7 @@ const RegisterForm = () => {
                   {formData.kyc.voterId && (
                     <input
                       type="file"
-                      accept=".jpg,.jpeg,application/pdf"
+                      accept=".jpg,.jpeg,.png,application/pdf"
                       onChange={e => handleKycFileChange(e, 'voterId')}
                       required={!!formData.kyc.voterId}
                     />
@@ -1377,7 +1557,7 @@ const RegisterForm = () => {
                   {formData.kyc.passportNumber && (
                     <input
                       type="file"
-                      accept=".jpg,.jpeg,application/pdf"
+                      accept=".jpg,.jpeg,.png,application/pdf"
                       onChange={e => handleKycFileChange(e, 'passport')}
                       required={!!formData.kyc.passportNumber}
                     />
@@ -1394,12 +1574,33 @@ const RegisterForm = () => {
                   {formData.kyc.drivingLicenseNumber && (
                     <input
                       type="file"
-                      accept=".jpg,.jpeg,application/pdf"
+                      accept=".jpg,.jpeg,.png,application/pdf"
                       onChange={e => handleKycFileChange(e, 'drivingLicense')}
                       required={!!formData.kyc.drivingLicenseNumber}
                     />
                   )}
                   {errors.drivingLicenseFile && <div className="error-message">{errors.drivingLicenseFile}</div>}
+                </div>
+                <div className="form-group">
+                  <label>Photo *</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={e => handleKycFileChange(e, 'photo')}
+                    required
+                  />
+                  {errors.photoFile && <div className="error-message">{errors.photoFile}</div>}
+                </div>
+                <div className="form-group">
+                  <label>Signature *</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={e => handleKycFileChange(e, 'signature')}
+                    required
+                  />
+                  {errors.signatureFile && <div className="error-message">{errors.signatureFile}</div>}
                 </div>
               </div>
           )}
@@ -1524,6 +1725,16 @@ const RegisterForm = () => {
                         )}
                       </>
                     )}
+                    {kycFiles.photo && (
+                      <li>
+                        <strong>Photo:</strong> <img src={URL.createObjectURL(kycFiles.photo)} alt="Photo" style={{maxWidth: 120, maxHeight: 120}} />
+                      </li>
+                    )}
+                    {kycFiles.signature && (
+                      <li>
+                        <strong>Signature:</strong> <img src={URL.createObjectURL(kycFiles.signature)} alt="Signature" style={{maxWidth: 120, maxHeight: 120}} />
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -1531,7 +1742,8 @@ const RegisterForm = () => {
 
           <div className="form-navigation">
             {step > 1 && (
-                <motion.button
+                <Motion.button
+                    type="button"
                     whileHover={{ scale: 1.100 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "keyframes", stiffness: 0 }}
@@ -1539,11 +1751,12 @@ const RegisterForm = () => {
                     onClick={() => handleBack()}
                 >
                   Back
-                </motion.button>
+                </Motion.button>
             )}
             {step < 5 && (step !== 0 || (phoneVerified && emailVerified)) && (
-                <motion.button
+                <Motion.button
                     id={"next-btn"}
+                    type="button"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 300 }}
@@ -1551,19 +1764,68 @@ const RegisterForm = () => {
                     onClick={handleNext}
                 >
                   Next
-                </motion.button>
+                </Motion.button>
             )}
             {step === 5 && (
                 <button type="submit" className="submit-btn"
-                        onClick={handleSubmit}
+                        disabled={submitStatus === 'loading'}
                 >
-                  Submit
+                  {submitStatus === 'loading' ? 'Submitting...' : 'Submit'}
                 </button>
             )}
           </div>
         </form>
 
-        {/* Existing User Link */}
+        {}
+        <Dialog
+          open={submitDialogOpen}
+          onClose={submitStatus === 'loading' ? undefined : () => { setSubmitDialogOpen(false); setSubmitStatus('idle'); setSubmitMessage(''); }}
+          aria-labelledby="submit-status-title"
+        >
+          <DialogTitle id="submit-status-title">
+            {submitStatus === 'loading' && 'Submitting'}
+            {submitStatus === 'success' && 'Completed'}
+            {submitStatus === 'error' && 'Failed'}
+          </DialogTitle>
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 320, py: 3 }}>
+            {submitStatus === 'loading' && (
+              <>
+                <CircularProgress size={56} />
+                <div>{submitMessage}</div>
+              </>
+            )}
+            {submitStatus === 'success' && (
+              <>
+                <Motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 20 }}>
+                  <CheckCircleOutlineIcon color="success" sx={{ fontSize: 72 }} />
+                </Motion.div>
+                <div style={{ textAlign: 'center' }}>
+                  {submitMessage || 'Registration successful.'}
+                </div>
+                <div style={{ textAlign: 'center', fontSize: 14, color: '#555' }}>
+                  You will be redirected to the home page in
+                </div>
+                <Motion.div key={redirectCountdown} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 250, damping: 18 }} style={{ fontSize: 28, fontWeight: 600, color: '#2e7d32' }}>
+                  {redirectCountdown}s
+                </Motion.div>
+                <LinearProgress variant="determinate" value={Math.min(100, ((5 - redirectCountdown) / 5) * 100)} sx={{ width: '100%', height: 8, borderRadius: 5 }} />
+                <Button variant="contained" color="success" onClick={() => { window.location.href = '/'; }}>
+                  Go now
+                </Button>
+              </>
+            )}
+            {submitStatus === 'error' && (
+              <>
+                <Motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 20 }}>
+                  <ErrorOutlineIcon color="error" sx={{ fontSize: 72 }} />
+                </Motion.div>
+                <div style={{ textAlign: 'center' }}>{submitMessage || 'Submission failed.'}</div>
+                <Button variant="contained" color="error" onClick={() => { setSubmitDialogOpen(false); setSubmitStatus('idle'); setSubmitMessage(''); }}>Try again</Button>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
+
         <div className="existing-user-link">
           <p>
             Already have an account?{' '}

@@ -5,7 +5,7 @@ const BankSlider = () => {
   const [loaded, setLoaded] = useState(false);
   const sliderRef = useRef(null);
 
-  // Premium banking images
+  
   const slides = [
     {
       id: 1,
@@ -28,12 +28,12 @@ const BankSlider = () => {
   ];
 
   useEffect(() => {
-    // Initial load animation
+    
     const timer = setTimeout(() => {
       setLoaded(true);
     }, 100);
 
-    // Auto slide every 6 seconds
+    
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 6000);

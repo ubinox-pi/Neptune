@@ -63,21 +63,21 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#f5f5f5', 
-      fontFamily: 'Arial, sans-serif', 
-      margin: 0, 
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#f5f5f5',
+      fontFamily: 'Arial, sans-serif',
+      margin: 0,
       padding: 0,
       position: 'relative',
       top: 0,
       left: 0,
       right: 0
     }}>
-      {/* Header */}
-      <header style={{ 
-        backgroundColor: 'white', 
-        padding: '1rem 2rem', 
+      {}
+      <header style={{
+        backgroundColor: 'white',
+        padding: '1rem 2rem',
         borderBottom: '1px solid #ddd',
         position: 'sticky',
         top: 0,
@@ -92,11 +92,11 @@ const Dashboard = () => {
             <h1 style={{ margin: 0, color: '#2563eb', fontSize: '1.5rem' }}>Neptune Bank</h1>
           </div>
 
-          {/* Desktop Navigation */}
+          {}
           <nav style={{ display: 'flex', gap: '2rem' }} className="desktop-nav">
-            <button 
+            <button
               onClick={() => setActiveTab('overview')}
-              style={{ 
+              style={{
                 background: activeTab === 'overview' ? '#2563eb' : 'transparent',
                 color: activeTab === 'overview' ? 'white' : '#666',
                 border: '1px solid #ddd',
@@ -107,9 +107,9 @@ const Dashboard = () => {
             >
               Dashboard
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('transactions')}
-              style={{ 
+              style={{
                 background: activeTab === 'transactions' ? '#2563eb' : 'transparent',
                 color: activeTab === 'transactions' ? 'white' : '#666',
                 border: '1px solid #ddd',
@@ -120,9 +120,9 @@ const Dashboard = () => {
             >
               Transactions
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('profile')}
-              style={{ 
+              style={{
                 background: activeTab === 'profile' ? '#2563eb' : 'transparent',
                 color: activeTab === 'profile' ? 'white' : '#666',
                 border: '1px solid #ddd',
@@ -151,7 +151,7 @@ const Dashboard = () => {
               Logout
             </button>
 
-            {/* Mobile Menu Button */}
+            {}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="mobile-menu-btn"
@@ -170,12 +170,12 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {}
         {isMobileMenuOpen && (
           <div className="mobile-nav" style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f9f9f9', borderRadius: '5px' }}>
-            <button 
+            <button
               onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
-              style={{ 
+              style={{
                 display: 'block',
                 width: '100%',
                 margin: '0.5rem 0',
@@ -189,9 +189,9 @@ const Dashboard = () => {
             >
               Dashboard
             </button>
-            <button 
+            <button
               onClick={() => { setActiveTab('transactions'); setIsMobileMenuOpen(false); }}
-              style={{ 
+              style={{
                 display: 'block',
                 width: '100%',
                 margin: '0.5rem 0',
@@ -205,9 +205,9 @@ const Dashboard = () => {
             >
               Transactions
             </button>
-            <button 
+            <button
               onClick={() => { setActiveTab('profile'); setIsMobileMenuOpen(false); }}
-              style={{ 
+              style={{
                 display: 'block',
                 width: '100%',
                 margin: '0.5rem 0',
@@ -225,19 +225,19 @@ const Dashboard = () => {
         )}
       </header>
 
-      {/* Main Content */}
+      {}
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem', marginTop: 0 }}>
         {activeTab === 'overview' && (
           <div>
             <h2 style={{ color: '#333', marginBottom: '2rem' }}>Dashboard Overview</h2>
-            
-            {/* Account Cards */}
+
+            {}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
               {accounts.map((account, index) => (
-                <div key={index} style={{ 
-                  backgroundColor: 'white', 
-                  padding: '1.5rem', 
-                  borderRadius: '10px', 
+                <div key={index} style={{
+                  backgroundColor: 'white',
+                  padding: '1.5rem',
+                  borderRadius: '10px',
                   boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
                   border: '1px solid #e5e5e5'
                 }}>
@@ -248,20 +248,20 @@ const Dashboard = () => {
                       <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>
                         {showBalance ? formatCurrency(account.balance) : '****'}
                       </span>
-                      <button 
+                      <button
                         onClick={() => setShowBalance(!showBalance)}
-                        style={{ 
-                          marginLeft: '10px', 
-                          background: 'none', 
-                          border: 'none', 
-                          cursor: 'pointer', 
-                          fontSize: '1rem' 
+                        style={{
+                          marginLeft: '10px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '1rem'
                         }}
                       >
                         {showBalance ? '👁️' : '👁️‍🗨️'}
                       </button>
                     </div>
-                    <span style={{ 
+                    <span style={{
                       backgroundColor: account.status === 'Active' ? '#10b981' : '#6b7280',
                       color: 'white',
                       padding: '0.25rem 0.75rem',
@@ -275,7 +275,7 @@ const Dashboard = () => {
               ))}
             </div>
 
-            {/* Quick Actions */}
+            {}
             <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
               <h3 style={{ margin: '0 0 1rem 0', color: '#333' }}>Quick Actions</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
@@ -299,38 +299,38 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Recent Transactions */}
+            {}
             <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 style={{ margin: 0, color: '#333' }}>Recent Transactions</h3>
-                <button 
+                <button
                   onClick={() => setActiveTab('transactions')}
-                  style={{ 
-                    color: '#2563eb', 
-                    background: 'none', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    textDecoration: 'underline' 
+                  style={{
+                    color: '#2563eb',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
                   }}
                 >
                   View All
                 </button>
               </div>
               {recentTransactions.slice(0, 5).map((transaction) => (
-                <div key={transaction.id} style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  padding: '1rem 0', 
-                  borderBottom: '1px solid #f0f0f0' 
+                <div key={transaction.id} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '1rem 0',
+                  borderBottom: '1px solid #f0f0f0'
                 }}>
                   <div>
                     <div style={{ fontWeight: '500', color: '#333' }}>{transaction.description}</div>
                     <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>{transaction.date}</div>
                   </div>
-                  <div style={{ 
-                    fontWeight: 'bold', 
-                    color: transaction.type === 'credit' ? '#10b981' : '#ef4444' 
+                  <div style={{
+                    fontWeight: 'bold',
+                    color: transaction.type === 'credit' ? '#10b981' : '#ef4444'
                   }}>
                     {transaction.type === 'credit' ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
                   </div>
@@ -345,20 +345,20 @@ const Dashboard = () => {
             <h2 style={{ color: '#333', marginBottom: '2rem' }}>All Transactions</h2>
             <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
               {recentTransactions.map((transaction) => (
-                <div key={transaction.id} style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  padding: '1rem 0', 
-                  borderBottom: '1px solid #f0f0f0' 
+                <div key={transaction.id} style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '1rem 0',
+                  borderBottom: '1px solid #f0f0f0'
                 }}>
                   <div>
                     <div style={{ fontWeight: '500', color: '#333' }}>{transaction.description}</div>
                     <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>{transaction.date}</div>
                   </div>
-                  <div style={{ 
-                    fontWeight: 'bold', 
-                    color: transaction.type === 'credit' ? '#10b981' : '#ef4444' 
+                  <div style={{
+                    fontWeight: 'bold',
+                    color: transaction.type === 'credit' ? '#10b981' : '#ef4444'
                   }}>
                     {transaction.type === 'credit' ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
                   </div>
@@ -373,17 +373,17 @@ const Dashboard = () => {
             <h2 style={{ color: '#333', marginBottom: '2rem' }}>Profile Information</h2>
             <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={{ 
-                  width: '80px', 
-                  height: '80px', 
-                  backgroundColor: '#2563eb', 
-                  borderRadius: '50%', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  color: 'white', 
-                  fontSize: '2rem', 
-                  fontWeight: 'bold' 
+                <div style={{
+                  width: '80px',
+                  height: '80px',
+                  backgroundColor: '#2563eb',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '2rem',
+                  fontWeight: 'bold'
                 }}>
                   {userProfile.name.split(' ').map(n => n[0]).join('')}
                 </div>
@@ -393,7 +393,7 @@ const Dashboard = () => {
                   <p style={{ margin: 0, color: '#666' }}>Account: {userProfile.accountNumber}</p>
                 </div>
               </div>
-              
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
                 <div style={{ padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
                   <strong style={{ color: '#333' }}>Name:</strong>
@@ -417,7 +417,7 @@ const Dashboard = () => {
         )}
       </main>
 
-      <style jsx>{`
+      <style>{`
         @media (max-width: 768px) {
           .desktop-nav {
             display: none !important;

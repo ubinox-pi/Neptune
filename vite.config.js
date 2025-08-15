@@ -7,11 +7,16 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    cors: true,
-    allowedHosts: ['f740-2409-40e5-2040-2355-4506-4999-a4b1-4e5f.ngrok-free.app'],
-    headers: {
-      'Access-Control-Allow-Origin': '*'
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        cookieDomainRewrite: '', // rewrite Set-Cookie Domain to current host (localhost)
+        cookiePathRewrite: '/',   // ensure cookie path works for the app
+      },
     },
-    origin: 'http://localhost:5173' // <- explicitly set origin
+    origin: 'http://localhost:5173'
   }
 })

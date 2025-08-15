@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { sessionManager } from '../utils/sessionManager';
 
 const OtpFlow = () => {
-  const [step, setStep] = useState('login'); // login, email-otp, phone-otp, complete
+  const [step, setStep] = useState('login');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [emailOtp, setEmailOtp] = useState('');
@@ -37,13 +37,13 @@ const OtpFlow = () => {
         setError(loginResult.error);
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError(err?.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Verify email OTP
+
   const handleEmailOtpVerification = async () => {
     setLoading(true);
     setError('');
@@ -68,13 +68,13 @@ const OtpFlow = () => {
         setError(result.message || 'Failed to verify email OTP');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError(err?.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 3: Verify phone OTP
+
   const handlePhoneOtpVerification = async () => {
     setLoading(true);
     setError('');
@@ -90,13 +90,13 @@ const OtpFlow = () => {
         setError(result.message || 'Failed to verify phone OTP');
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError(err?.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  // Resend email OTP
+
   const resendEmailOtp = async () => {
     setLoading(true);
     const result = await sessionManager.sendOtpEmail(email);
@@ -104,7 +104,7 @@ const OtpFlow = () => {
     setLoading(false);
   };
 
-  // Resend phone OTP
+
   const resendPhoneOtp = async () => {
     setLoading(true);
     const result = await sessionManager.sendOtpPhone(phoneNumber);
@@ -116,7 +116,6 @@ const OtpFlow = () => {
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Account Verification</h2>
 
-      {/* Display messages */}
       {message && (
         <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
           {message}
@@ -129,7 +128,6 @@ const OtpFlow = () => {
         </div>
       )}
 
-      {/* Step 1: Login and initiate OTP */}
       {step === 'login' && (
         <div>
           <div className="mb-4">
@@ -170,7 +168,6 @@ const OtpFlow = () => {
         </div>
       )}
 
-      {/* Step 2: Email OTP Verification */}
       {step === 'email-otp' && (
         <div>
           <p className="mb-4 text-sm text-gray-600">
@@ -210,7 +207,6 @@ const OtpFlow = () => {
         </div>
       )}
 
-      {/* Step 3: Phone OTP Verification */}
       {step === 'phone-otp' && (
         <div>
           <p className="mb-4 text-sm text-gray-600">
@@ -250,7 +246,6 @@ const OtpFlow = () => {
         </div>
       )}
 
-      {/* Step 4: Complete */}
       {step === 'complete' && (
         <div className="text-center">
           <div className="mb-4">
@@ -263,7 +258,7 @@ const OtpFlow = () => {
             Your account has been successfully verified. You can now access all features.
           </p>
           <button
-            onClick={() => window.location.href = '/dashboard'}
+            onClick={() => (window.location.href = '/dashboard')}
             className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             Go to Dashboard

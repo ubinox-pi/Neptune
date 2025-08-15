@@ -1,16 +1,16 @@
 import React from "react";
-import GetStartedPage from "./Pages/GetStartedPage";
-import "./Pages/get-started.css";
+import GetStartedPage from "./pages/GetStartedPage";
+import "./styles/get-started.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./Pages/Home.jsx";
-import About from "./Pages/About.jsx";
-import Services from "./Pages/Services.jsx";
-import Contact from "./Pages/Contact.jsx";
-import Register from "./Pages/Register.jsx";
-import Login from "./Pages/Login.jsx";
-import ForgotPassword from "./Pages/ForgotPassword.jsx";
-import Dashboard from "./Pages/Dashboard.jsx";
-import EmployeeDashboard from "./Pages/EmployeeDashboard.jsx";
+import Home from "./pages/Home.jsx";
+import About from "./pages/About.jsx";
+import Services from "./pages/Services.jsx";
+import Contact from "./pages/Contact.jsx";
+import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import EmployeeDashboard from "./pages/EmployeeDashboard.jsx";
 const App = () => {
   return (
     <div>

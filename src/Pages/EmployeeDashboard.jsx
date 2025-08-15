@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { motion as Motion } from "framer-motion";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -12,7 +12,7 @@ const EmployeeDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Handle logout logic here
+    
     navigate("/login");
   };
 
@@ -150,7 +150,6 @@ const EmployeeDashboard = () => {
 
   return (
     <div className="employee-dashboard">
-      {/* Header */}
       <header className="dashboard-header">
         <div className="header-left">
           <img src={logo} alt="Neptune Bank" className="header-logo" />
@@ -168,40 +167,38 @@ const EmployeeDashboard = () => {
       </header>
 
       <div className="dashboard-content">
-        {/* Sidebar */}
         <aside className="sidebar">
           <nav className="sidebar-nav">
             {sidebarItems.map((item) => (
-              <motion.button
-                key={item.id}
-                className={`sidebar-item ${
-                  activeSection === item.id ? "active" : ""
-                }`}
-                onClick={() => setActiveSection(item.id)}
-                whileHover={{ x: 5 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <span className="sidebar-icon">{item.icon}</span>
-                <span className="sidebar-label">{item.label}</span>
-              </motion.button>
-            ))}
+              <Motion.button
+                 key={item.id}
+                 className={`sidebar-item ${
+                   activeSection === item.id ? "active" : ""
+                 }`}
+                 onClick={() => setActiveSection(item.id)}
+                 whileHover={{ x: 5 }}
+                 whileTap={{ scale: 0.98 }}
+               >
+                 <span className="sidebar-icon">{item.icon}</span>
+                 <span className="sidebar-label">{item.label}</span>
+              </Motion.button>
+             ))}
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="main-content">
-          <motion.div
-            key={activeSection}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderContent()}
-          </motion.div>
+          <Motion.div
+             key={activeSection}
+             initial={{ opacity: 0, x: 20 }}
+             animate={{ opacity: 1, x: 0 }}
+             transition={{ duration: 0.3 }}
+           >
+             {renderContent()}
+          </Motion.div>
         </main>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .employee-dashboard {
           min-height: 100vh;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

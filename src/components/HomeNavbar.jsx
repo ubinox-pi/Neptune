@@ -37,7 +37,7 @@ const HomeNavbar = () => {
             justifyContent: "space-between",
           }}
         >
-          {/* Logo */}
+          {}
           <div
             style={{
               display: "flex",
@@ -60,7 +60,7 @@ const HomeNavbar = () => {
             </span>
           </div>
 
-          {/* Desktop Navigation */}
+          {}
           <nav
             style={{
               display: "flex",
@@ -106,7 +106,7 @@ const HomeNavbar = () => {
             ))}
           </nav>
 
-          {/* Mobile Menu Button */}
+          {}
           <button
             className="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -161,7 +161,7 @@ const HomeNavbar = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {}
         {isMobileMenuOpen && (
           <div
             className="mobile-nav"

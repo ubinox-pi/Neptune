@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -8,7 +8,7 @@ import "@fontsource/roboto/700.css";
 import logo from "../assets/Neptune Bank.png";
 
 const Login = () => {
-  const [loginType, setLoginType] = useState("user"); // 'user' or 'employee'
+  const [loginType, setLoginType] = useState("user"); 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +26,7 @@ const Login = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Clear error when user starts typing
+    
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -65,10 +65,10 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Handle login logic here
+      
       console.log("Login attempt:", { ...formData, loginType });
 
-      // Redirect based on login type
+      
       if (loginType === "employee") {
         navigate("/employee-dashboard");
       } else {
@@ -80,24 +80,21 @@ const Login = () => {
   return (
     <div className="login-page">
       <div className="login-container">
-        <motion.div
+        <Motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="login-form-wrapper"
         >
-          {/* Logo */}
           <div className="login-logo">
             <img src={logo} alt="Neptune Bank Logo" />
           </div>
 
-          {/* Welcome Text */}
           <div className="login-header">
             <h2>Welcome Back</h2>
             <p>Sign in to your Neptune Bank account</p>
           </div>
 
-          {/* Login Type Toggle */}
           <div className="login-type-toggle">
             <button
               type="button"
@@ -119,7 +116,6 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="login-form">
             {loginType === "user" ? (
               <div className="form-group">
@@ -196,24 +192,22 @@ const Login = () => {
               </Link>
             </div>
 
-            <motion.button
+            <Motion.button
               type="submit"
               className="login-button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               Sign In
-            </motion.button>
+            </Motion.button>
           </form>
 
-          {/* Divider */}
           <div className="divider">
             <span>or</span>
           </div>
 
-          {/* Social Login */}
           <div className="social-login">
-            <motion.button
+            <Motion.button
               type="button"
               className="social-button google"
               whileHover={{ scale: 1.02 }}
@@ -221,10 +215,9 @@ const Login = () => {
             >
               <span className="social-icon">🔍</span>
               Continue with Google
-            </motion.button>
+            </Motion.button>
           </div>
 
-          {/* Register Link */}
           <div className="register-link">
             <p>
               Don't have an account?{" "}
@@ -233,10 +226,9 @@ const Login = () => {
               </Link>
             </p>
           </div>
-        </motion.div>
+        </Motion.div>
       </div>
-
-      <style jsx>{`
+      <style>{`
         * {
           margin: 0;
           padding: 0;

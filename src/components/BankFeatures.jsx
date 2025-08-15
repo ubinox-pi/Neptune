@@ -203,7 +203,7 @@ const BankFeatures = () => {
         </div>
       </section>
 
-      <style jsx>{`
+      <style>{`
         @media (max-width: 768px) {
           .features-section {
             margin: 20px 12px !important;
