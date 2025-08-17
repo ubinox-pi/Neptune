@@ -1,7 +1,7 @@
 const resolveApiBase = () => {
   const envBase = import.meta.env.VITE_API_BASE_URL;
   if (import.meta.env.DEV) {
-    
+
     if (envBase && envBase.startsWith('/')) return envBase;
     return '/api';
   }
@@ -64,7 +64,7 @@ export const sessionManager = {
             message: loginData.message
           }));
 
-          
+
 
           return {
             success: true,
@@ -83,16 +83,6 @@ export const sessionManager = {
       }
     } catch {
       return { success: false, error: 'Network error. Please try again.' };
-    }
-  },
-
-  debugLogSessionCookie: () => {
-    const cookies = document.cookie || '';
-    if (cookies.includes('JSESSIONID=')) {
-      const js = cookies.split(';').find(c => c.trim().startsWith('JSESSIONID='));
-      console.log('JSESSIONID (not HttpOnly):', js);
-    } else {
-      console.log('JSESSIONID is HttpOnly or not visible to JS. Requests will still send it automatically.');
     }
   },
 
@@ -125,7 +115,7 @@ export const sessionManager = {
     }
   },
 
-  
+
   verifyEmailOtp: async (email, otp) => {
     try {
       console.log('Verifying email OTP for:', email);
@@ -136,7 +126,7 @@ export const sessionManager = {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        credentials: 'include', 
+        credentials: 'include',
         body: JSON.stringify({ email, otp }),
       });
 
@@ -155,7 +145,7 @@ export const sessionManager = {
     }
   },
 
-  
+
   sendOtpPhone: async (phoneNumber) => {
     try {
       console.log('Sending OTP to phone:', phoneNumber);
@@ -166,7 +156,7 @@ export const sessionManager = {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        credentials: 'include', 
+        credentials: 'include',
         body: JSON.stringify({ phoneNumber }),
       });
 
@@ -185,7 +175,7 @@ export const sessionManager = {
     }
   },
 
-  
+
   verifyPhoneOtp: async (phoneNumber, otp) => {
     try {
       console.log('Verifying phone OTP for:', phoneNumber);
@@ -196,7 +186,7 @@ export const sessionManager = {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        credentials: 'include', 
+        credentials: 'include',
         body: JSON.stringify({ phoneNumber, otp }),
       });
 
@@ -215,20 +205,20 @@ export const sessionManager = {
     }
   },
 
-  
+
   completeOtpFlow: async (email) => {
     try {
       console.log('Starting complete OTP flow...');
       const results = {};
 
-      
+
       console.log('Step 1: Sending OTP to email...');
       results.emailSent = await sessionManager.sendOtpEmail(email);
       if (!results.emailSent.success) {
         return { success: false, error: 'Failed to send email OTP', results };
       }
 
-      
+
       console.log('Email OTP sent successfully. Waiting for user verification...');
 
       return {
@@ -243,13 +233,13 @@ export const sessionManager = {
     }
   },
 
-  
+
   continueOtpFlowAfterEmail: async (phoneNumber) => {
     try {
       console.log('Continuing OTP flow with phone verification...');
       const results = {};
 
-      
+
       console.log('Step 3: Sending OTP to phone...');
       results.phoneSent = await sessionManager.sendOtpPhone(phoneNumber);
       if (!results.phoneSent.success) {
@@ -270,16 +260,16 @@ export const sessionManager = {
     }
   },
 
-  
+
   ensureAuthenticated: async () => {
     return true;
   },
 
-  
+
   makeAuthenticatedRequest: async (path, options = {}) => {
     const BASE_URL = API_BASE;
 
-    
+
     const defaultHeaders = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -295,50 +285,15 @@ export const sessionManager = {
     return response;
   },
 
-  
+
   makeMultipartRequest: async (path, formData, headers = {}) => {
     const BASE_URL = API_BASE;
     const response = await fetch(`${BASE_URL}${path}`, {
       method: 'POST',
       body: formData,
-      headers: { ...headers }, 
+      headers: { ...headers },
       credentials: 'include',
     });
     return response;
-  },
-
-  
-  isLoggedIn: () => {
-    const userInfo = sessionStorage.getItem('userInfo');
-    return userInfo !== null;
-  },
-
-  
-  getUserInfo: () => {
-    const userInfo = sessionStorage.getItem('userInfo');
-    return userInfo ? JSON.parse(userInfo) : null;
-  },
-
-  
-  logout: () => {
-    sessionStorage.removeItem('userInfo');
-    
-    console.log('User logged out');
-  },
-
-  
-  validateSession: async () => {
-    try {
-      const res = await fetch(`${API_BASE}/auth/validate`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: { 'Accept': 'application/json' },
-      });
-      if (!res.ok) return { success: false, status: res.status };
-      const data = await res.json().catch(() => ({}));
-      return { success: true, data };
-    } catch {
-      return { success: false, error: 'Network error' };
-    }
   },
 };

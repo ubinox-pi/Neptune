@@ -26,7 +26,22 @@ const occupationOptions = ["SALARIED", "GOVERNMENT", "PRIVATE", "PROFESSIONAL", 
 const categoryOptions = ["GENERAL", "OBC", "SC", "ST"];
 const religionOptions = ["HINDU", "MUSLIM", "CHRISTIAN", "SIKH", "OTHER"];
 const citizenOptions = ["INDIAN", "NRI"];
-const relationshipOptions = ["FATHER", "MOTHER", "SPOUSE", "CHILD", "OTHER"];
+const relationshipOptions = [
+  "FATHER",
+  "SISTER",
+  "BROTHER",
+  "MOTHER",
+  "SPOUSE",
+  "SIBLING",
+  "SON",
+  "DAUGHTER",
+  "WIFE",
+  "HUSBAND",
+  "GRANDPARENT",
+  "GRANDCHILD",
+  "UNCLE",
+  "AUNT"
+];
 
 
 const steps = [
@@ -351,18 +366,18 @@ const RegisterForm = () => {
     signature: null,
   });
   const [loading, setLoading] = useState(false);
-  // Added: resend timers (in seconds)
+
   const [phoneResendSeconds, setPhoneResendSeconds] = useState(0);
   const [emailResendSeconds, setEmailResendSeconds] = useState(0);
-  // Added: submit dialog state
   const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState('idle'); // idle | loading | success | error
+  const [submitStatus, setSubmitStatus] = useState('idle');
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitInlineError, setSubmitInlineError] = useState('');
-  // Added: redirect countdown (seconds)
+
   const [redirectCountdown, setRedirectCountdown] = useState(0);
 
-  // Tick down phone timer
+  const digitsOnly = (s) => (s || '').replace(/\D/g, '');
+
   useEffect(() => {
     if (phoneResendSeconds <= 0) return;
     const id = setInterval(() => {
@@ -371,7 +386,6 @@ const RegisterForm = () => {
     return () => clearInterval(id);
   }, [phoneResendSeconds]);
 
-  // Tick down email timer
   useEffect(() => {
     if (emailResendSeconds <= 0) return;
     const id = setInterval(() => {
@@ -380,7 +394,6 @@ const RegisterForm = () => {
     return () => clearInterval(id);
   }, [emailResendSeconds]);
 
-  // Start a 5s redirect countdown once submission succeeds and dialog is open
   useEffect(() => {
     if (submitStatus !== 'success' || !submitDialogOpen) return;
     setRedirectCountdown(5);
@@ -396,7 +409,6 @@ const RegisterForm = () => {
     };
   }, [submitStatus, submitDialogOpen]);
 
-  // Helper to format mm:ss
   const formatMMSS = (total) => {
     const m = Math.floor(total / 60);
     const s = total % 60;
@@ -432,7 +444,6 @@ const RegisterForm = () => {
     }
   };
 
-  // Added: resend phone OTP convenience wrapper
   const resendPhoneOTP = async () => {
     if (phoneResendSeconds > 0 || phoneVerified) return;
     try {
@@ -443,12 +454,11 @@ const RegisterForm = () => {
         body: JSON.stringify({ phone: formData.contactDetails.mobileNumber }),
       });
       if (response.ok) {
-        // backend returns { status, message, code } on success
         setPhoneOtpSent(true);
-        setPhoneResendSeconds(120); // restart 2-minute cooldown
+        setPhoneResendSeconds(120);
         setErrors((prev) => ({ ...prev, phoneOtp: undefined, ['contactDetails.mobileNumber']: undefined }));
       } else {
-        // backend returns { error, message, status } on error
+
         let msg = 'Failed to resend OTP';
         try {
           const ct = response.headers.get('content-type') || '';
@@ -482,7 +492,7 @@ const RegisterForm = () => {
       });
       if (response.ok) {
         setEmailOtpSent(true);
-        setEmailResendSeconds(120); // start 2-minute cooldown
+        setEmailResendSeconds(120);
         setErrors((prev) => ({ ...prev, ['contactDetails.email']: undefined }));
       } else {
         let msg = 'Failed to send OTP';
@@ -501,7 +511,6 @@ const RegisterForm = () => {
     }
   };
 
-  // Added: resend email OTP convenience wrapper
   const resendEmailOTP = async () => {
     if (emailResendSeconds > 0 || emailVerified) return;
     await sendEmailOTP(formData.contactDetails.email);
@@ -637,7 +646,7 @@ const RegisterForm = () => {
         let age = today.getFullYear() - birth.getFullYear();
         const m = today.getMonth() - birth.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-        if (age < 18) newErrors.dateOfBirth = 'Minimum age is 18 to open an account';
+        if (isNaN(age) || age < 18) newErrors.dateOfBirth = 'Minimum age is 18 to open an account';
       }
       if (!formData.gender) newErrors.gender = 'Gender is required';
       if (!formData.fatherName) newErrors.fatherName = "Father's Name is required";
@@ -653,14 +662,14 @@ const RegisterForm = () => {
     if (step === 2) {
       const c = formData.contactDetails;
       if (!c.mobileNumber) newErrors['contactDetails.mobileNumber'] = 'Mobile Number is required';
-      else if (!/^[0-9]{10}$/.test(c.mobileNumber)) newErrors['contactDetails.mobileNumber'] = 'Mobile Number must be 10 digits';
+      else if (!/^\d{10}$/.test(c.mobileNumber)) newErrors['contactDetails.mobileNumber'] = 'Mobile Number must be 10 digits';
       if (!c.email) newErrors['contactDetails.email'] = 'Email is required';
       if (!c.communicationAddress) newErrors['contactDetails.communicationAddress'] = 'Communication Address is required';
       if (!c.permanentAddress) newErrors['contactDetails.permanentAddress'] = 'Permanent Address is required';
       if (!c.city) newErrors['contactDetails.city'] = 'City is required';
       if (!c.state) newErrors['contactDetails.state'] = 'State is required';
       if (!c.zip) newErrors['contactDetails.zip'] = 'Pin Code is required';
-      if (!/^[1-9][0-9]{5}$/.test(c.zip)) newErrors['contactDetails.zip'] = 'Pin Code must be 6 digits';
+      else if (!/^[1-9][0-9]{5}$/.test(c.zip)) newErrors['contactDetails.zip'] = 'Pin Code must be 6 digits';
       if (!c.country) newErrors['contactDetails.country'] = 'Country is required';
       if (!c.landmark) newErrors['contactDetails.landmark'] = 'Landmark is required';
     }
@@ -677,17 +686,17 @@ const RegisterForm = () => {
         let age = today.getFullYear() - birth.getFullYear();
         const m = today.getMonth() - birth.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-        if (age < 18) newErrors['nominee.nomineeDateOfBirth'] = 'Nominee must be at least 18 years old';
+        if (isNaN(age) || age < 18) newErrors['nominee.nomineeDateOfBirth'] = 'Nominee must be at least 18 years old';
       }
       if (!n.nomineeMobileNumber) newErrors['nominee.nomineeMobileNumber'] = 'Mobile Number is required';
-      else if (!/^[0-9]{10}$/.test(n.nomineeMobileNumber)) newErrors['nominee.nomineeMobileNumber'] = 'Mobile Number must be 10 digits';
+      else if (!/^\d{10}$/.test(n.nomineeMobileNumber)) newErrors['nominee.nomineeMobileNumber'] = 'Mobile Number must be 10 digits';
       else if (n.nomineeMobileNumber === userMobile) newErrors['nominee.nomineeMobileNumber'] = 'Nominee mobile cannot be same as user mobile';
       if (!n.nomineeEmail) newErrors['nominee.nomineeEmail'] = 'Nominee Email is required';
       else if (n.nomineeEmail === userEmail) newErrors['nominee.nomineeEmail'] = 'Nominee email cannot be same as user email';
       if (!n.nomineeAadhaar) newErrors['nominee.nomineeAadhaar'] = 'Nominee Aadhaar is required';
       else if (!/^\d{12}$/.test(n.nomineeAadhaar)) newErrors['nominee.nomineeAadhaar'] = 'Aadhaar must be 12 digits';
       if (!n.nomineePan) newErrors['nominee.nomineePan'] = 'Nominee PAN is required';
-      else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(n.nomineePan.toUpperCase())) newErrors['nominee.nomineePan'] = 'Invalid PAN format';
+      else if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(n.nomineePan.toUpperCase())) newErrors['nominee.nomineePan'] = 'Invalid PAN format';
       if (!n.nomineeAddress) newErrors['nominee.nomineeAddress'] = 'Nominee Address is required';
     }
     if (step === 4) {
@@ -695,12 +704,12 @@ const RegisterForm = () => {
       const n = formData.nominee;
 
       if (!k.aadhaarNumber) newErrors['kyc.aadhaarNumber'] = 'Aadhaar Number is required';
-      else if (!/^[0-9]{12}$/.test(k.aadhaarNumber)) newErrors['kyc.aadhaarNumber'] = 'Aadhaar must be 12 digits';
+      else if (!/^\d{12}$/.test(k.aadhaarNumber)) newErrors['kyc.aadhaarNumber'] = 'Aadhaar must be 12 digits';
       else if (k.aadhaarNumber === n.nomineeAadhaar) newErrors['kyc.aadhaarNumber'] = 'Aadhaar cannot match nominee Aadhaar';
       if (!kycFiles.aadhaar) newErrors['aadhaarFile'] = 'Aadhaar file is required';
 
       if (!k.panNumber) newErrors['kyc.panNumber'] = 'PAN Number is required';
-      else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(k.panNumber.toUpperCase())) newErrors['kyc.panNumber'] = 'Invalid PAN format';
+      else if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(k.panNumber.toUpperCase())) newErrors['kyc.panNumber'] = 'Invalid PAN format';
       else if (k.panNumber.toUpperCase() === n.nomineePan.toUpperCase()) newErrors['kyc.panNumber'] = 'PAN cannot match nominee PAN';
       if (!kycFiles.pan) newErrors['panFile'] = 'PAN file is required';
 
@@ -719,6 +728,102 @@ const RegisterForm = () => {
       if (!kycFiles.photo) newErrors['photoFile'] = 'Photo is required';
       if (!kycFiles.signature) newErrors['signatureFile'] = 'Signature is required';
     }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateAll = () => {
+    const newErrors = {};
+
+    const nameFields = [
+      { key: 'firstName', value: formData.firstName },
+      { key: 'middleName', value: formData.middleName },
+      { key: 'lastName', value: formData.lastName },
+      { key: 'fatherName', value: formData.fatherName },
+      { key: 'motherName', value: formData.motherName },
+      { key: 'spouseName', value: formData.spouseName },
+      { key: 'nominee.nomineeName', value: formData.nominee.nomineeName },
+    ];
+    nameFields.forEach(({ key, value }) => {
+      if (value && /[0-9]/.test(value)) newErrors[key] = 'Name cannot contain numbers';
+    });
+
+    if (!formData.firstName) newErrors.firstName = 'First Name is required';
+    if (!formData.lastName) newErrors.lastName = 'Last Name is required';
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of Birth is required';
+    else {
+      const birth = new Date(formData.dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      if (isNaN(age) || age < 18) newErrors.dateOfBirth = 'Minimum age is 18 to open an account';
+    }
+    if (!formData.gender) newErrors.gender = 'Gender is required';
+    if (!formData.fatherName) newErrors.fatherName = "Father's Name is required";
+    if (!formData.motherName) newErrors.motherName = "Mother's Name is required";
+    if (!formData.maritalStatus) newErrors.maritalStatus = 'Marital Status is required';
+    if (formData.maritalStatus === 'MARRIED' && !formData.spouseName) newErrors.spouseName = 'Spouse Name is required';
+    if (!formData.occupation) newErrors.occupation = 'Occupation is required';
+    if (!formData.salary) newErrors.salary = 'Salary is required';
+    if (!formData.citizen) newErrors.citizen = 'Citizen is required';
+    if (!formData.category) newErrors.category = 'Category is required';
+    if (!formData.religion) newErrors.religion = 'Religion is required';
+
+    const c = formData.contactDetails;
+    if (!c.mobileNumber) newErrors['contactDetails.mobileNumber'] = 'Mobile Number is required';
+    else if (!/^\d{10}$/.test(c.mobileNumber)) newErrors['contactDetails.mobileNumber'] = 'Mobile Number must be 10 digits';
+    if (!c.email) newErrors['contactDetails.email'] = 'Email is required';
+    if (!c.communicationAddress) newErrors['contactDetails.communicationAddress'] = 'Communication Address is required';
+    if (!c.permanentAddress) newErrors['contactDetails.permanentAddress'] = 'Permanent Address is required';
+    if (!c.city) newErrors['contactDetails.city'] = 'City is required';
+    if (!c.state) newErrors['contactDetails.state'] = 'State is required';
+    if (!c.zip) newErrors['contactDetails.zip'] = 'Pin Code is required';
+    else if (!/^[1-9][0-9]{5}$/.test(c.zip)) newErrors['contactDetails.zip'] = 'Pin Code must be 6 digits';
+    if (!c.country) newErrors['contactDetails.country'] = 'Country is required';
+    if (!c.landmark) newErrors['contactDetails.landmark'] = 'Landmark is required';
+
+    const n = formData.nominee;
+    const userMobile = formData.contactDetails.mobileNumber;
+    const userEmail = formData.contactDetails.email;
+    if (!n.nomineeName) newErrors['nominee.nomineeName'] = 'Nominee Name is required';
+    if (!n.nomineeRelationship) newErrors['nominee.nomineeRelationship'] = 'Relationship is required';
+    if (!n.nomineeDateOfBirth) newErrors['nominee.nomineeDateOfBirth'] = 'Date of Birth is required';
+    else {
+      const birthN = new Date(n.nomineeDateOfBirth);
+      const todayN = new Date();
+      let ageN = todayN.getFullYear() - birthN.getFullYear();
+      const mN = todayN.getMonth() - birthN.getMonth();
+      if (mN < 0 || (mN === 0 && todayN.getDate() < birthN.getDate())) ageN--;
+      if (isNaN(ageN) || ageN < 18) newErrors['nominee.nomineeDateOfBirth'] = 'Nominee must be at least 18 years old';
+    }
+    if (!n.nomineeMobileNumber) newErrors['nominee.nomineeMobileNumber'] = 'Mobile Number is required';
+    else if (!/^\d{10}$/.test(n.nomineeMobileNumber)) newErrors['nominee.nomineeMobileNumber'] = 'Mobile Number must be 10 digits';
+    else if (n.nomineeMobileNumber === userMobile) newErrors['nominee.nomineeMobileNumber'] = 'Nominee mobile cannot be same as user mobile';
+    if (!n.nomineeEmail) newErrors['nominee.nomineeEmail'] = 'Nominee Email is required';
+    else if (n.nomineeEmail === userEmail) newErrors['nominee.nomineeEmail'] = 'Nominee email cannot be same as user email';
+    if (!n.nomineeAadhaar) newErrors['nominee.nomineeAadhaar'] = 'Nominee Aadhaar is required';
+    else if (!/^\d{12}$/.test(n.nomineeAadhaar)) newErrors['nominee.nomineeAadhaar'] = 'Aadhaar must be 12 digits';
+    if (!n.nomineePan) newErrors['nominee.nomineePan'] = 'Nominee PAN is required';
+    else if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(n.nomineePan.toUpperCase())) newErrors['nominee.nomineePan'] = 'Invalid PAN format';
+    if (!n.nomineeAddress) newErrors['nominee.nomineeAddress'] = 'Nominee Address is required';
+
+    const k = formData.kyc;
+    if (!k.aadhaarNumber) newErrors['kyc.aadhaarNumber'] = 'Aadhaar Number is required';
+    else if (!/^\d{12}$/.test(k.aadhaarNumber)) newErrors['kyc.aadhaarNumber'] = 'Aadhaar must be 12 digits';
+    if (!kycFiles.aadhaar) newErrors['aadhaarFile'] = 'Aadhaar file is required';
+
+    if (!k.panNumber) newErrors['kyc.panNumber'] = 'PAN Number is required';
+    else if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(k.panNumber.toUpperCase())) newErrors['kyc.panNumber'] = 'Invalid PAN format';
+    if (!kycFiles.pan) newErrors['panFile'] = 'PAN file is required';
+
+    if (k.voterId && !kycFiles.voterId) newErrors['voterIdFile'] = 'Voter ID file is required';
+    if (k.passportNumber && !kycFiles.passport) newErrors['passportFile'] = 'Passport file is required';
+    if (k.drivingLicenseNumber && !kycFiles.drivingLicense) newErrors['drivingLicenseFile'] = 'Driving License file is required';
+
+    if (!kycFiles.photo) newErrors['photoFile'] = 'Photo is required';
+    if (!kycFiles.signature) newErrors['signatureFile'] = 'Signature is required';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -785,8 +890,8 @@ const RegisterForm = () => {
         } else {
           message = await response.text();
         }
-      } catch {
-        // ignore body parse errors
+      } catch (e) {
+        console.warn('Failed to read response for submitApplication:', e.message);
       }
 
       return { ok: response.ok, message: message || (response.ok ? 'Application submitted successfully.' : 'Submission failed.') };
@@ -797,10 +902,14 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Only allow actual submit on final step
     if (step !== 5) return;
     setSubmitInlineError('');
-    if (!validateStep()) return;
+
+    if (!validateAll()) {
+      setSubmitInlineError('Please correct the highlighted fields.');
+      return;
+    }
+
     setSubmitDialogOpen(true);
     setSubmitStatus('loading');
     setSubmitMessage('Submitting your application...');
@@ -809,9 +918,7 @@ const RegisterForm = () => {
       if (result.ok) {
         setSubmitStatus('success');
         setSubmitMessage(result.message || 'Registration successful.');
-
       } else {
-
         setSubmitDialogOpen(false);
         setSubmitStatus('idle');
         setSubmitMessage('');
@@ -821,7 +928,7 @@ const RegisterForm = () => {
       setSubmitDialogOpen(false);
       setSubmitStatus('idle');
       setSubmitMessage('');
-      setSubmitInlineError('Something went wrong. Please try again. '+err.message);
+      setSubmitInlineError('Something went wrong. Please try again. ' + err.message);
     }
   };
 
@@ -859,9 +966,19 @@ const RegisterForm = () => {
                   <div className="form-group">
                     <label>Phone Number *</label>
                     <input
+                      type="tel"
+                      inputMode="numeric"
                       name="mobileNumber"
                       value={formData.contactDetails.mobileNumber}
-                      onChange={(e) => handleNestedChange(e, "contactDetails")}
+                      onChange={(e) => {
+                        const v = digitsOnly(e.target.value).slice(0, 10);
+                        setFormData((prev) => ({
+                          ...prev,
+                          contactDetails: { ...prev.contactDetails, mobileNumber: v },
+                        }));
+                        setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: undefined }));
+                      }}
+                      maxLength={10}
                       required
                       disabled={phoneOtpSent || phoneVerified}
                       className={getError('mobileNumber', 'contactDetails') ? 'error-input' : ''}
@@ -869,8 +986,8 @@ const RegisterForm = () => {
                     {getError('mobileNumber', 'contactDetails') && <div className="error-message">{getError('mobileNumber', 'contactDetails')}</div>}
                     {!phoneOtpSent && !phoneVerified && (
                       <button type="button" className={"otp-btn"} disabled={loading} onClick={() => {
-                        if (formData.contactDetails.mobileNumber.length < 10) {
-                          setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Enter a valid phone number.' }));
+                        if (formData.contactDetails.mobileNumber.length !== 10) {
+                          setErrors((prev) => ({ ...prev, ['contactDetails.mobileNumber']: 'Enter a valid 10-digit phone number.' }));
                         } else {
                           sendPhoneOTP(formData.contactDetails.mobileNumber);
                         }
@@ -879,10 +996,13 @@ const RegisterForm = () => {
                     {phoneOtpSent && !phoneVerified && (
                       <>
                         <input
-                            style={{marginTop: "10px"}}
+                          style={{marginTop: "10px"}}
+                          type="text"
+                          inputMode="numeric"
                           placeholder="Enter phone OTP"
                           value={phoneOtp}
-                          onChange={(e) => setPhoneOtp(e.target.value)}
+                          maxLength={6}
+                          onChange={(e) => setPhoneOtp(digitsOnly(e.target.value).slice(0, 6))}
                         />
                         <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
                           <button type="button" className={"verify-btn"} disabled={loading} onClick={() => {
@@ -938,10 +1058,13 @@ const RegisterForm = () => {
                     {emailOtpSent && !emailVerified && (
                       <>
                         <input
-                            style={{marginTop: "10px"}}
+                          style={{marginTop: "10px"}}
+                          type="text"
+                          inputMode="numeric"
                           placeholder="Enter email OTP"
                           value={emailOtp}
-                          onChange={(e) => setEmailOtp(e.target.value)}
+                          maxLength={6}
+                          onChange={(e) => setEmailOtp(digitsOnly(e.target.value).slice(0, 6))}
                         />
                         <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
                           <button type="button" className={"verify-btn"} disabled={loading} onClick={() => {
