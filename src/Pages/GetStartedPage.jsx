@@ -4,16 +4,19 @@ import HeroSection from '../components/HeroSection.jsx';
 import WhyChooseUs from '../components/WhyChooseUs.jsx';
 import Footer from '../components/Footer.jsx';
 import BankFeatures from '../components/BankFeatures.jsx';
+    import '../styles/get-started.css';
 
 const GetStartedPage = () => {
     return (
-        <div>
+        <div className="get-started-page">
             <Header />
-            <HeroSection />
-            <div style={{ height: 40 }} />
-            <BankFeatures />
-            <WhyChooseUs />
-            <Footer />
+            <div className="main-content">
+                <HeroSection />
+                <div style={{ height: 40 }} />
+                <BankFeatures />
+                <WhyChooseUs />
+                <Footer />
+            </div>
         </div>
     );
 };

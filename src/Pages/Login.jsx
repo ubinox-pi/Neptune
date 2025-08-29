@@ -8,11 +8,9 @@ import "@fontsource/roboto/700.css";
 import logo from "../assets/Neptune Bank.png";
 
 const Login = () => {
-  const [loginType, setLoginType] = useState("user"); 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    employeeCode: "",
     rememberMe: false,
   });
   const [errors, setErrors] = useState({});
@@ -26,7 +24,6 @@ const Login = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -38,18 +35,10 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (loginType === "employee") {
-      if (!formData.employeeCode) {
-        newErrors.employeeCode = "Employee code is required";
-      } else if (formData.employeeCode.length < 4) {
-        newErrors.employeeCode = "Employee code must be at least 4 characters";
-      }
-    } else {
-      if (!formData.email) {
-        newErrors.email = "Email is required";
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        newErrors.email = "Email is invalid";
-      }
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
     }
 
     if (!formData.password) {
@@ -65,15 +54,8 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      
-      console.log("Login attempt:", { ...formData, loginType });
-
-      
-      if (loginType === "employee") {
-        navigate("/employee-dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      console.log("Login attempt:", { ...formData });
+      navigate("/dashboard");
     }
   };
 
@@ -95,61 +77,22 @@ const Login = () => {
             <p>Sign in to your Neptune Bank account</p>
           </div>
 
-          <div className="login-type-toggle">
-            <button
-              type="button"
-              className={`toggle-button ${
-                loginType === "user" ? "active" : ""
-              }`}
-              onClick={() => setLoginType("user")}
-            >
-              User Login
-            </button>
-            <button
-              type="button"
-              className={`toggle-button ${
-                loginType === "employee" ? "active" : ""
-              }`}
-              onClick={() => setLoginType("employee")}
-            >
-              Employee Login
-            </button>
-          </div>
-
           <form onSubmit={handleSubmit} className="login-form">
-            {loginType === "user" ? (
-              <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter your email"
-                  className={errors.email ? "error" : ""}
-                />
-                {errors.email && (
-                  <span className="error-message">{errors.email}</span>
-                )}
-              </div>
-            ) : (
-              <div className="form-group">
-                <label htmlFor="employeeCode">Employee Code</label>
-                <input
-                  type="text"
-                  id="employeeCode"
-                  name="employeeCode"
-                  value={formData.employeeCode}
-                  onChange={handleInputChange}
-                  placeholder="Enter your employee code"
-                  className={errors.employeeCode ? "error" : ""}
-                />
-                {errors.employeeCode && (
-                  <span className="error-message">{errors.employeeCode}</span>
-                )}
-              </div>
-            )}
+            <div className="form-group">
+              <label htmlFor="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                className={errors.email ? "error" : ""}
+              />
+              {errors.email && (
+                <span className="error-message">{errors.email}</span>
+              )}
+            </div>
 
             <div className="form-group">
               <label htmlFor="password">Password</label>
@@ -177,16 +120,6 @@ const Login = () => {
             </div>
 
             <div className="form-options">
-              <label className="remember-me">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                />
-                <span className="checkmark"></span>
-                Remember me
-              </label>
               <Link to="/forgot-password" className="forgot-password">
                 Forgot Password?
               </Link>
@@ -206,21 +139,9 @@ const Login = () => {
             <span>or</span>
           </div>
 
-          <div className="social-login">
-            <Motion.button
-              type="button"
-              className="social-button google"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="social-icon">🔍</span>
-              Continue with Google
-            </Motion.button>
-          </div>
-
           <div className="register-link">
             <p>
-              Don't have an account?{" "}
+              Don't have an account{" "}
               <Link to="/register" className="register-button">
                 Create New Account
               </Link>
